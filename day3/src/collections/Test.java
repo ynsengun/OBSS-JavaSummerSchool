@@ -59,7 +59,7 @@ public class Test {
 			while ((line = br.readLine()) != null) {
 				String[] words = line.split(" ");
 				for (int i = 0; i < words.length; i++) {
-					treeSet.add(words[i]);
+					
 				}
 			}
 
