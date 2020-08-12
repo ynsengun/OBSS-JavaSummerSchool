@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app>
+	<context-param>
+        <param-name>contextParam</param-name> <!-- context parama butun servlet instance lar ulasabilir -->
+        <param-value>x</param-value>
+    </context-param>
+    
+    <servlet>
+         <servlet-name>AuthServlet</servlet-name>
+         <servlet-class>AuthServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+         <servlet-name>AuthServlet</servlet-name>
+         <url-pattern>/auth</url-pattern>
+    </servlet-mapping>
+    <!-- <servlet>
+         <servlet-name>AuthServlet2</servlet-name> servlet name kisimlari farkli olmali
+         <servlet-class>AuthServlet</servlet-class> packagename.class (full path) instance in hangi class tan olusturulacagini soyluyor
+    </servlet>
+    <servlet-mapping>
+         <servlet-name>AuthServlet2</servlet-name> bu key'deki (servlet-name) instance hangi url den cagirilcak
+         <url-pattern>/auth2</url-pattern> iste o url
+    </servlet-mapping>
+     Ayni objenin iki farkli urlden iki instance i olusabiliyor  -->
+    
+    <servlet>
+         <servlet-name>InitParamServlet</servlet-name>
+         <servlet-class>InitParamServlet</servlet-class>
+         <init-param>
+            <param-name>method</param-name> <!-- bu key i kullnarak value ya servlet methodlarin ulasabilirim -->
+            <param-value>forward</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+         <servlet-name>InitParamServlet</servlet-name>
+         <url-pattern>/init-param</url-pattern>
+    </servlet-mapping>
+    
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Secure</web-resource-name>
+            <url-pattern>/auth/*</url-pattern> <!-- bu url in altindakiler icin authorization gerekli -->
+            <http-method>GET</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>AuthorizedUser</role-name> <!-- bu role name authorize olabilir bu url e -->
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    
+    
+    <login-config>
+        <auth-method>BASIC</auth-method> <!-- browserda normal bi sekilde id, pass -->
+        <realm-name>The Restricted Zone</realm-name>
+    </login-config>
+    
+    <security-role>
+        <description>The role required to access restricted content </description>
+        <role-name>AuthorizedUser</role-name> <!-- role olusturuyoruz yukariya yazmak icin -->
+    </security-role>
+    
+    
+</web-app>
