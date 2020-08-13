@@ -1,22 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <web-app>
-    <servlet>
-         <servlet-name>Withdraw</servlet-name>
-         <servlet-class>Withdraw</servlet-class>
-    </servlet>
-    <servlet-mapping>
-         <servlet-name>Withdraw</servlet-name>
-         <url-pattern>/withdraw</url-pattern>
-    </servlet-mapping>
-    
-    <servlet>
-         <servlet-name>ServletRequest</servlet-name>
-         <servlet-class>ServletRequest</servlet-class>
-    </servlet>
-    <servlet-mapping>
-         <servlet-name>ServletRequest</servlet-name>
-         <url-pattern>/dynamicServlet/*</url-pattern>
-    </servlet-mapping>
-    
+<!-- <error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/notFound.jsp</location>
+	</error-page> -->
+	<error-page>
+		<location>/catcher</location>
+	</error-page>
+	
+	<servlet>
+		<servlet-name>ErrorCatcherServlet</servlet-name>
+		<servlet-class>ErrorCatcherServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ErrorCatcherServlet</servlet-name>
+		<url-pattern>/catcher</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ErrorThrowerServlet</servlet-name>
+		<servlet-class>ErrorThrowerServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ErrorThrowerServlet</servlet-name>
+		<url-pattern>/error</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>Withdraw</servlet-name>
+		<servlet-class>Withdraw</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Withdraw</servlet-name>
+		<url-pattern>/withdraw</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ServletRequest</servlet-name>
+		<servlet-class>ServletRequest</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ServletRequest</servlet-name>
+		<url-pattern>/dynamicServlet/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>servlet_info_sharing.OriginServlet</servlet-name>
+		<servlet-class>servlet_info_sharing.OriginServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>servlet_info_sharing.OriginServlet</servlet-name>
+		<url-pattern>/origin/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>servlet_info_sharing.DestinationServlet</servlet-name>
+		<servlet-class>servlet_info_sharing.DestinationServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>servlet_info_sharing.DestinationServlet</servlet-name>
+		<url-pattern>/destination/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ServletIncludeMechanism</servlet-name>
+		<servlet-class>ServletIncludeMechanism</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ServletIncludeMechanism</servlet-name>
+		<url-pattern>/include/*</url-pattern>
+	</servlet-mapping>
+
 </web-app>
