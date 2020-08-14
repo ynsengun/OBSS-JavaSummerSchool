@@ -8,24 +8,27 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/edit-contact-form")
-public class EditContactServlet extends HttpServlet {
+@WebServlet("/login")
+public class LoginServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -7479240461367423474L;
+	private static final long serialVersionUID = 3387274638761748857L;
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.getRequestDispatcher("/WEB-INF/edit-contact.jsp").forward(req, resp);
+		System.out.println("In login doGet");
+		req.getRequestDispatcher("/public/login.jsp").forward(req, resp);
 	}
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String name = req.getParameter("name");
-		String phone = req.getParameter("phone");
+		String pass = req.getParameter("pass");
 		
-		System.out.println("In edit doPost name: " + name + " phone: " + phone);
+		if( "test".equals(name) && "pass".equals(pass)) {
+			req.getSession().setAttribute("isUserLoggedIn",	"true");
+		}
 		
-		DBManager.updateDB(name, new Contact(name, phone));
-		req.getRequestDispatcher("WEB-INF/operation-successful.jsp").forward(req, resp);
+		resp.sendRedirect("/LoginWebApp/public");
 	}
+
 }

@@ -30,7 +30,7 @@ public class DBManager {
 	
 	public static void createTable() {
 		String createTableSQL = "CREATE TABLE IF NOT EXISTS contact " + "(id INTEGER NOT NULL AUTO_INCREMENT, "
-				+ " name VARCHAR(255), " + " phone VARCHAR(255), " + " PRIMARY KEY ( id ))";
+				+ " name VARCHAR(255) UNIQUE, " + " phone VARCHAR(255), " + " PRIMARY KEY ( id ))";
 
 		try (Statement stmt = con.createStatement();) {
 			stmt.executeUpdate("DROP TABLE contact");
@@ -55,12 +55,12 @@ public class DBManager {
 		}
 	}
 	
-	public static void updateDB(Contact contact) {
+	public static void updateDB(String name, Contact contact) {
 		String updateSQL = "update contact set phone = ? where name = ?";
 
 		try (PreparedStatement updatePreparedStmt = con.prepareStatement(updateSQL);) {
 			updatePreparedStmt.setString(1, contact.getPhone());
-			updatePreparedStmt.setString(2, contact.getName());
+			updatePreparedStmt.setString(2, name);
 			updatePreparedStmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

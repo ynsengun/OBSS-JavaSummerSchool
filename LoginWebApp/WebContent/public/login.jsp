@@ -7,20 +7,16 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h1>Create</h1>
-	<form action="create-contact-form" method="post">
+	<form action="login" method="post">
 		<label for="name">Name: </label>
-		<input type="text" name="name">
-		<span style="font-size:13px; margin-left:10px;">*Name shoud be unique</span>
-		<br>
-		<br>
+		<input type="text" name="name" placeholder="test">
+		<br><br>
 		
-		<label for="phone">Phone: </label>
-		<input type="number" name="phone">
-		<br>
-		<br>
+		<label for="pass">Password: </label>
+		<input type="password" name="pass" placeholder="pass">
+		<br><br>
 		
-		<button>Add</button>
+		<button>submit</button>
 	</form>
 </body>
 </html>

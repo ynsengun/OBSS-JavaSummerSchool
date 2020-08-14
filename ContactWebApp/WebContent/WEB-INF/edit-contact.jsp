@@ -14,7 +14,7 @@
 		<br> <br>
 		
 		<label for="phone">Phone: </label>
-		<input type="text" name="phone" value=${phone}>
+		<input type="number" name="phone" value=${phone}>
 		<br> <br>
 
 		<button>Edit</button>

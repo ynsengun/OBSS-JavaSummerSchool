@@ -25,12 +25,16 @@ public class CreateContactServlet extends HttpServlet {
 		
 		String name = req.getParameter("name");
 		String phone = req.getParameter("phone");
-
-		Contact contact = new Contact(name, phone);
 		
 		System.out.println("name: " + name + " phone: " + phone);
 		
-		DBManager.insertDB(contact);
-		req.getRequestDispatcher("WEB-INF/operation-successful.jsp").forward(req, resp);
+		Contact contactExist = DBManager.searchDB(name);
+		if(contactExist == null) {
+			Contact contact = new Contact(name, phone);
+			DBManager.insertDB(contact);
+			req.getRequestDispatcher("WEB-INF/operation-successful.jsp").forward(req, resp);
+		} else {
+			req.getRequestDispatcher("WEB-INF/contact-exist.html").forward(req, resp);
+		}
 	}
 }
