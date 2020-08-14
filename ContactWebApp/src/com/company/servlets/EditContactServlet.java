@@ -1,4 +1,4 @@
-package com.company;
+package com.company.servlets;
 
 import java.io.IOException;
 
@@ -7,6 +7,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.company.Contact;
+import com.company.ContactDBManager;
 
 @WebServlet("/edit-contact-form")
 public class EditContactServlet extends HttpServlet {
@@ -25,7 +28,7 @@ public class EditContactServlet extends HttpServlet {
 		
 		System.out.println("In edit doPost name: " + name + " phone: " + phone);
 		
-		DBManager.updateDB(name, new Contact(name, phone));
-		req.getRequestDispatcher("WEB-INF/operation-successful.jsp").forward(req, resp);
+		ContactDBManager.updateDB(name, new Contact(name, phone));
+		req.getRequestDispatcher("WEB-INF/operation-successful.html").forward(req, resp);
 	}
 }

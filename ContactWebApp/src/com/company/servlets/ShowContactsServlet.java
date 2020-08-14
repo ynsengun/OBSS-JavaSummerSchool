@@ -1,4 +1,4 @@
-package com.company;
+package com.company.servlets;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.company.Contact;
+import com.company.ContactDBManager;
+
 @WebServlet("/show-contact-form")
 public class ShowContactsServlet extends HttpServlet {
 
@@ -18,7 +21,7 @@ public class ShowContactsServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		System.out.println("In show doGet");
 		
-		ArrayList<Contact> contacts = DBManager.getAll();
+		ArrayList<Contact> contacts = ContactDBManager.getAll();
 		req.setAttribute("contacts", contacts);
 		
 		req.getRequestDispatcher("/WEB-INF/show-contacts.jsp").forward(req, resp);

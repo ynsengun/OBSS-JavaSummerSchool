@@ -1,4 +1,4 @@
-package com.company;
+package com.company.servlets;
 
 
 import java.io.IOException;
@@ -8,6 +8,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.company.Contact;
+import com.company.ContactDBManager;
 
 @WebServlet("/create-contact-form")
 public class CreateContactServlet extends HttpServlet {
@@ -28,11 +31,11 @@ public class CreateContactServlet extends HttpServlet {
 		
 		System.out.println("name: " + name + " phone: " + phone);
 		
-		Contact contactExist = DBManager.searchDB(name);
+		Contact contactExist = ContactDBManager.searchDB(name);
 		if(contactExist == null) {
 			Contact contact = new Contact(name, phone);
-			DBManager.insertDB(contact);
-			req.getRequestDispatcher("WEB-INF/operation-successful.jsp").forward(req, resp);
+			ContactDBManager.insertDB(contact);
+			req.getRequestDispatcher("WEB-INF/operation-successful.html").forward(req, resp);
 		} else {
 			req.getRequestDispatcher("WEB-INF/contact-exist.html").forward(req, resp);
 		}

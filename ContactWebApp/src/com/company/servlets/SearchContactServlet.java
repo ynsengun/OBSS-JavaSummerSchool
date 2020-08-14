@@ -1,4 +1,4 @@
-package com.company;
+package com.company.servlets;
 
 import java.io.IOException;
 
@@ -7,6 +7,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.company.Contact;
+import com.company.ContactDBManager;
 
 @WebServlet("/search-contact-form")
 public class SearchContactServlet extends HttpServlet {
@@ -22,9 +25,9 @@ public class SearchContactServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String name = req.getParameter("name");
 		
-		Contact contact = DBManager.searchDB(name);
+		Contact contact = ContactDBManager.searchDB(name);
 		if(contact == null) {
-			req.getRequestDispatcher("/WEB-INF/searchNotFound.jsp").forward(req, resp);
+			req.getRequestDispatcher("/WEB-INF/searchNotFound.html").forward(req, resp);
 			return;
 		}
 		

@@ -8,10 +8,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class DBManager {
+public class ContactDBManager {
 	private static Connection con;
 	
-	private DBManager() { }
+	private ContactDBManager() { }
 	
 	static {
 		System.out.println("In static");
