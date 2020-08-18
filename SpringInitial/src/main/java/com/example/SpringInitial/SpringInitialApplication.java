@@ -28,7 +28,7 @@ public class SpringInitialApplication implements WebMvcConfigurer {
 	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(requestInInterceptor);
+		registry.addInterceptor(requestInInterceptor); 
 	}
 
 }
