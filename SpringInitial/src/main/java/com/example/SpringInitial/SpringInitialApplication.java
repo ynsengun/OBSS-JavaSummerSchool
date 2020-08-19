@@ -13,9 +13,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.example.SpringInitial.interceptor.RequestInInterceptor;
 
 @SpringBootApplication(exclude= {
-		DataSourceAutoConfiguration.class,
-		DataSourceTransactionManagerAutoConfiguration.class,
-		HibernateJpaAutoConfiguration.class,
+//		DataSourceAutoConfiguration.class,
+//		DataSourceTransactionManagerAutoConfiguration.class,
+//		HibernateJpaAutoConfiguration.class,
 		SecurityAutoConfiguration.class
 })
 public class SpringInitialApplication implements WebMvcConfigurer {

@@ -10,13 +10,23 @@ import org.springframework.stereotype.Component;
 
 import com.example.SpringInitial.model.UserDTO;
 
-@Component
+@Component("prototypeCache")
 @Scope("prototype")
-public class UserCachePrototype {
-	public Map<String, UserDTO> users;
+public class UserCachePrototype implements UserCache {
+	private Map<String, UserDTO> users;
 	
 	@PostConstruct
 	public void init() {
 		users = new HashMap<>();
+	}
+
+	@Override
+	public void put(UserDTO user) {
+		users.put(user.getUserName(), user);
+	}
+
+	@Override
+	public Map<String, UserDTO> getMap() {
+		return this.users;
 	}
 }
