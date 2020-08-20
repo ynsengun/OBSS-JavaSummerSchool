@@ -1,5 +1,6 @@
 package com.example.SpringInitial.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +48,7 @@ public class UserController {
 
 	@GetMapping("/")
 	@ResponseBody
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<?> get(@RequestParam(name = "pageSize", defaultValue = "2") int pageSize,
 			@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
 		return ResponseEntity.ok(userService.findAll(pageSize, pageNumber));
@@ -66,6 +69,14 @@ public class UserController {
 	@ResponseBody
 	public ResponseEntity<?> get(@RequestParam(name = "username", defaultValue = "") String username) {
 		List<User> userList = userService.findByUsername(username);
+
+		return ResponseEntity.ok(userList);
+	}
+	
+	@GetMapping("/has-role-user")
+	@ResponseBody
+	public ResponseEntity<?> findByRoles() {
+		List<User> userList = userService.findByRoles(Arrays.asList("ROLE_USER"));
 
 		return ResponseEntity.ok(userList);
 	}

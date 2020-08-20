@@ -16,7 +16,7 @@ import com.example.SpringInitial.interceptor.RequestInInterceptor;
 //		DataSourceAutoConfiguration.class,
 //		DataSourceTransactionManagerAutoConfiguration.class,
 //		HibernateJpaAutoConfiguration.class,
-		SecurityAutoConfiguration.class
+//		SecurityAutoConfiguration.class
 })
 public class SpringInitialApplication implements WebMvcConfigurer {
 	@Autowired
