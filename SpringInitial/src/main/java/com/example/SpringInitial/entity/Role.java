@@ -1,6 +1,7 @@
 package com.example.SpringInitial.entity;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +18,7 @@ public class Role extends EntityBase {
 
 	@ManyToMany(mappedBy = "roles")
 	@JsonBackReference
-	private List<User> users;
+	private Set<User> users;
 
 	public String getName() {
 		return name;
@@ -27,11 +28,11 @@ public class Role extends EntityBase {
 		this.name = name;
 	}
 
-	public List<User> getUsers() {
+	public Set<User> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<User> users) {
+	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
 }

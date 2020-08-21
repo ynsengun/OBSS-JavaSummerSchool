@@ -1,9 +1,7 @@
 package com.example.SpringInitial.controller;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -11,7 +9,6 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,16 +16,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.SpringInitial.cache.UserCachePrototype;
-import com.example.SpringInitial.cache.UserCacheSingleton;
+import com.example.SpringInitial.entity.Book;
 import com.example.SpringInitial.entity.User;
+import com.example.SpringInitial.model.UserBookDTO;
 import com.example.SpringInitial.model.UserDTO;
 import com.example.SpringInitial.model.UserUpdateDTO;
 import com.example.SpringInitial.service.UserService;
@@ -106,5 +102,54 @@ public class UserController {
 
 		return ResponseEntity.ok(user);
 	}
+	
+	// ------------------ List Operations ---------------------- //
+	
+	@PostMapping("/add-read-item")
+	@ResponseBody
+	public ResponseEntity<?> addRead(@Valid @RequestBody UserBookDTO dto) {
+		User user = userService.addRead(dto);
 
+		return ResponseEntity.ok(user);
+	}
+	
+	@PostMapping("/add-favorite-item")
+	@ResponseBody
+	public ResponseEntity<?> addFavorite(@Valid @RequestBody UserBookDTO dto) {
+		User user = userService.addFavorite(dto);
+
+		return ResponseEntity.ok(user);
+	}
+	
+	@DeleteMapping("/delete-read-item")
+	@ResponseBody
+	public ResponseEntity<?> deleteRead(@Valid @RequestBody UserBookDTO dto) {
+		User user = userService.deleteRead(dto);
+
+		return ResponseEntity.ok(user);
+	}
+	
+	@DeleteMapping("/delete-favorite-item")
+	@ResponseBody
+	public ResponseEntity<?> deleteFavorite(@Valid @RequestBody UserBookDTO dto) {
+		User user = userService.deleteFavorite(dto);
+
+		return ResponseEntity.ok(user);
+	}
+	
+	@GetMapping("/read-list/{id}")
+	@ResponseBody
+	public ResponseEntity<?> findRead(@PathVariable long id) {
+		List<Book> books = userService.findRead(id);
+
+		return ResponseEntity.ok(books);
+	}
+	
+	@GetMapping("/favorite-list/{id}")
+	@ResponseBody
+	public ResponseEntity<?> findFavorite(@PathVariable long id) {
+		List<Book> books = userService.findFavorite(id);
+
+		return ResponseEntity.ok(books);
+	}
 }
