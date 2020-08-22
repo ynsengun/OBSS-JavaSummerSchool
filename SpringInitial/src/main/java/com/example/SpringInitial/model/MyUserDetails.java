@@ -12,10 +12,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.example.SpringInitial.entity.User;
 
 public class MyUserDetails implements UserDetails {
+	private static final long serialVersionUID = 1084795066311163486L;
 	
+	public long id;
 	private User user;
 	
 	public MyUserDetails(User user) {
+		this.id = user.getId();
 		this.user = user;
 	}
 
@@ -38,21 +41,29 @@ public class MyUserDetails implements UserDetails {
 
 	@Override
 	public boolean isAccountNonExpired() {
+		if("admin@admin.com".equals(user.getUsername()))
+			return true;
 		return user.isActive();
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
+		if("admin@admin.com".equals(user.getUsername()))
+			return true;
 		return user.isActive();
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
+		if("admin@admin.com".equals(user.getUsername()))
+			return true;
 		return user.isActive();
 	}
 
 	@Override
 	public boolean isEnabled() {
+		if("admin@admin.com".equals(user.getUsername()))
+			return true;
 		return user.isActive();
 	}
 

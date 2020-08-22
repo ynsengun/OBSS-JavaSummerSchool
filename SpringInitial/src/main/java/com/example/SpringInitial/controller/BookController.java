@@ -1,6 +1,7 @@
 package com.example.SpringInitial.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -35,25 +36,59 @@ public class BookController {
 		this.bookService = bookService;
 	}
 	
-	@GetMapping("/")
+	@GetMapping("")
 	@ResponseBody
-	public ResponseEntity<?> get(@RequestParam(name = "pageSize", defaultValue = "2") int pageSize,
+	public ResponseEntity<?> get(@RequestParam(name = "pageSize", defaultValue = "5") int pageSize,
 			@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
-		Page<Book> books = bookService.findAll(pageSize, pageNumber);
+		Page<Book> books = bookService.findAllActive(pageSize, pageNumber);
 		
 		return ResponseEntity.ok(books);
 	}
 	
-	@GetMapping("/all")
+	@GetMapping("/{id}")
 	@ResponseBody
-	public ResponseEntity<?> get() {
-		List<Book> books = bookService.findAll();
-		
+	public ResponseEntity<?> get(@PathVariable long id) {
+		Optional<Book> bookOptional = bookService.findByIdActive(id);
+		if (bookOptional.isPresent()) {
+			return ResponseEntity.ok(bookOptional.get());
+		}
+
+		throw new IllegalArgumentException("Book is not found");
+	}
+	
+	@GetMapping("/search-name")
+	@ResponseBody
+	public ResponseEntity<?> getByName(@RequestParam(name = "name", defaultValue = "") String name,
+			@RequestParam(name = "pageSize", defaultValue = "5") int pageSize,
+			@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
+		Page<Book> books = bookService.findByNameActive(name, pageSize, pageNumber);
+
+		return ResponseEntity.ok(books);
+	}
+	
+	@GetMapping("/search-author")
+	@ResponseBody
+	public ResponseEntity<?> getByAuthor(@RequestParam(name = "author", defaultValue = "") String author,
+			@RequestParam(name = "pageSize", defaultValue = "5") int pageSize,
+			@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
+		Page<Book> books = bookService.findByNameActive(author, pageSize, pageNumber);
+
+		return ResponseEntity.ok(books);
+	}
+	
+	@GetMapping("/search-type")
+	@ResponseBody
+	public ResponseEntity<?> getByType(@RequestParam(name = "type", defaultValue = "") String type,
+			@RequestParam(name = "pageSize", defaultValue = "5") int pageSize,
+			@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
+		Page<Book> books = bookService.findByNameActive(type, pageSize, pageNumber);
+
 		return ResponseEntity.ok(books);
 	}
 	
 	@PutMapping("/{id}")
 	@ResponseBody
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<?> update(@PathVariable long id, @Valid @RequestBody BookUpdateDTO bookDTO) {
 		Book book = bookService.update(id, bookDTO);
 
@@ -62,6 +97,7 @@ public class BookController {
 
 	@DeleteMapping("/{id}")
 	@ResponseBody
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<?> delete(@PathVariable long id) {
 		Book book = bookService.delete(id);
 
@@ -70,6 +106,7 @@ public class BookController {
 	
 	@PostMapping("")
 	@ResponseBody
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<?> post(@Valid @RequestBody BookDTO bookDTO){
 		Book book = bookService.save(bookDTO);
 		

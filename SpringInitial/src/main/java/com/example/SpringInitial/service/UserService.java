@@ -69,29 +69,22 @@ public class UserService implements UserDetailsService {
 		return savedUser;
 	}
 
-	public Page<User> findAll(int pageSize, int pageNumber) {
+	public Page<User> findAllActive(int pageSize, int pageNumber) {
 		Pageable paged = PageRequest.of(pageNumber, pageSize);
-		return userRepository.findAll(paged);
+		return userRepository.findByActiveTrue(paged);
 	}
 
-	public List<User> findAll() {
-		return userRepository.findAll();
+	public Optional<User> findByIdActive(long id) {
+		return userRepository.findByIdAndActiveTrue(id);
 	}
 
-	public List<User> findByRoles(List<String> roles) {
-		return userRepository.findByRoles_NameIn(roles);
-	}
-
-	public Optional<User> findById(long id) {
-		return userRepository.findById(id);
-	}
-
-	public List<User> findByUsername(String username) {
-		return userRepository.findByUsernameStartingWithOrderByIdDesc(username);
+	public Page<User> findByUsernameActive(String username, int pageSize, int pageNumber) {
+		Pageable paged = PageRequest.of(pageNumber, pageSize);
+		return userRepository.findByUsernameContainingAndActiveTrue(username, paged);
 	}
 
 	public User update(long id, UserUpdateDTO dto) {
-		Optional<User> byId = userRepository.findById(id);
+		Optional<User> byId = userRepository.findByIdAndActiveTrue(id);
 		if (byId.isPresent()) {
 			User user = byId.get();
 			user.setPassword(dto.getPassword());
@@ -122,10 +115,11 @@ public class UserService implements UserDetailsService {
 	// ------------------ List operations ----------------------- //
 
 	public User addRead(UserBookDTO dto) {
-		Optional<User> userById = userRepository.findById(dto.getUserID());
-		Optional<Book> bookById = bookRepository.findById(dto.getBookID());
-
+		Optional<User> userById = userRepository.findByIdAndActiveTrue(dto.getUserID());
+		
 		if (userById.isPresent()) {
+			Optional<Book> bookById = bookRepository.findByIdAndActiveTrue(dto.getBookID());
+			
 			if (bookById.isPresent()) {
 				User user = userById.get();
 				Book book = bookById.get();
@@ -140,10 +134,11 @@ public class UserService implements UserDetailsService {
 	}
 
 	public User addFavorite(UserBookDTO dto) {
-		Optional<User> userById = userRepository.findById(dto.getUserID());
-		Optional<Book> bookById = bookRepository.findById(dto.getBookID());
+		Optional<User> userById = userRepository.findByIdAndActiveTrue(dto.getUserID());
 
 		if (userById.isPresent()) {
+			Optional<Book> bookById = bookRepository.findByIdAndActiveTrue(dto.getBookID());
+			
 			if (bookById.isPresent()) {
 				User user = userById.get();
 				Book book = bookById.get();
@@ -158,10 +153,11 @@ public class UserService implements UserDetailsService {
 	}
 	
 	public User deleteRead(UserBookDTO dto) {
-		Optional<User> userById = userRepository.findById(dto.getUserID());
-		Optional<Book> bookById = bookRepository.findById(dto.getBookID());
+		Optional<User> userById = userRepository.findByIdAndActiveTrue(dto.getUserID());
 
 		if (userById.isPresent()) {
+			Optional<Book> bookById = bookRepository.findByIdAndActiveTrue(dto.getBookID());
+			
 			if (bookById.isPresent()) {
 				User user = userById.get();
 				Book book = bookById.get();
@@ -176,10 +172,11 @@ public class UserService implements UserDetailsService {
 	}
 	
 	public User deleteFavorite(UserBookDTO dto) {
-		Optional<User> userById = userRepository.findById(dto.getUserID());
-		Optional<Book> bookById = bookRepository.findById(dto.getBookID());
+		Optional<User> userById = userRepository.findByIdAndActiveTrue(dto.getUserID());
 
 		if (userById.isPresent()) {
+			Optional<Book> bookById = bookRepository.findByIdAndActiveTrue(dto.getBookID());
+			
 			if (bookById.isPresent()) {
 				User user = userById.get();
 				Book book = bookById.get();
@@ -193,29 +190,27 @@ public class UserService implements UserDetailsService {
 		throw new UsernameNotFoundException("User is not found");
 	}
 	
-	public List<Book> findRead(long userID){
-		Optional<User> userById = userRepository.findById(userID);
+	public Page<Book> findRead(long userID, int pageSize, int pageNumber){
+		Optional<User> userById = userRepository.findByIdAndActiveTrue(userID);
 		
 		if(userById.isPresent()) {
 			User user = userById.get();
+			Pageable paged = PageRequest.of(pageNumber, pageSize);
 			
-			List<Book> books = bookRepository.findByReadUsers_UsernameIn(Arrays.asList(user.getUsername())); 
-			
-			return books;
+			return bookRepository.findByReadUsers_UsernameIn(Arrays.asList(user.getUsername()), paged); 
 		}
 		
 		return null;
 	}
 	
-	public List<Book> findFavorite(long userID){
-		Optional<User> userById = userRepository.findById(userID);
+	public Page<Book> findFavorite(long userID, int pageSize, int pageNumber){
+		Optional<User> userById = userRepository.findByIdAndActiveTrue(userID);
 		
 		if(userById.isPresent()) {
 			User user = userById.get();
+			Pageable paged = PageRequest.of(pageNumber, pageSize);
 			
-			List<Book> books = bookRepository.findByFavoriteUsers_UsernameIn(Arrays.asList(user.getUsername())); 
-			
-			return books;
+			return bookRepository.findByFavoriteUsers_UsernameIn(Arrays.asList(user.getUsername()), paged); 
 		}
 		
 		return null;

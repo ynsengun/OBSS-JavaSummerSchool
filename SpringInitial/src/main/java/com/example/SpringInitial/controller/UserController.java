@@ -6,9 +6,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,28 +31,29 @@ import com.example.SpringInitial.service.UserService;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
+	
 	private UserService userService;
 
 	@Autowired
 	public UserController(UserService userService) {
 		this.userService = userService;
 	}
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-
-	@GetMapping("/")
+	
+	@GetMapping("")
 	@ResponseBody
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<?> get(@RequestParam(name = "pageSize", defaultValue = "2") int pageSize,
+	public ResponseEntity<?> get(@RequestParam(name = "pageSize", defaultValue = "5") int pageSize,
 			@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
-		return ResponseEntity.ok(userService.findAll(pageSize, pageNumber));
+		Page<User> users = userService.findAllActive(pageSize, pageNumber);
+		
+		return ResponseEntity.ok(users);
 	}
 
 	@GetMapping("/{id}")
 	@ResponseBody
+	@PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_ADMIN')")
 	public ResponseEntity<?> get(@PathVariable long id) {
-		Optional<User> userOptional = userService.findById(id);
+		Optional<User> userOptional = userService.findByIdActive(id);
 		if (userOptional.isPresent()) {
 			return ResponseEntity.ok(userOptional.get());
 		}
@@ -63,22 +63,18 @@ public class UserController {
 
 	@GetMapping("/search")
 	@ResponseBody
-	public ResponseEntity<?> get(@RequestParam(name = "username", defaultValue = "") String username) {
-		List<User> userList = userService.findByUsername(username);
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<?> get(@RequestParam(name = "username", defaultValue = "") String username,
+			@RequestParam(name = "pageSize", defaultValue = "5") int pageSize,
+			@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
+		Page<User> users = userService.findByUsernameActive(username, pageSize, pageNumber);
 
-		return ResponseEntity.ok(userList);
-	}
-	
-	@GetMapping("/has-role-user")
-	@ResponseBody
-	public ResponseEntity<?> findByRoles() {
-		List<User> userList = userService.findByRoles(Arrays.asList("ROLE_USER"));
-
-		return ResponseEntity.ok(userList);
+		return ResponseEntity.ok(users);
 	}
 
 	@PutMapping("/{id}")
 	@ResponseBody
+	@PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_ADMIN')")
 	public ResponseEntity<?> update(@PathVariable long id, @Valid @RequestBody UserUpdateDTO userDTO) {
 		User user = userService.update(id, userDTO);
 
@@ -87,6 +83,7 @@ public class UserController {
 
 	@DeleteMapping("/{id}")
 	@ResponseBody
+	@PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_ADMIN')")
 	public ResponseEntity<?> delete(@PathVariable long id) {
 		User user = userService.delete(id);
 
@@ -96,59 +93,67 @@ public class UserController {
 	@PostMapping("")
 	@ResponseBody
 	public ResponseEntity<?> post(@Valid @RequestBody UserDTO userDTO) {
-		// LOGGER.info("{} {}", user.getUserName(), user.getPassword());
-
 		User user = userService.save(userDTO);
 
 		return ResponseEntity.ok(user);
 	}
-	
+
 	// ------------------ List Operations ---------------------- //
-	
+
 	@PostMapping("/add-read-item")
 	@ResponseBody
+	@PreAuthorize("#dto.userID == authentication.principal.id")
 	public ResponseEntity<?> addRead(@Valid @RequestBody UserBookDTO dto) {
 		User user = userService.addRead(dto);
 
 		return ResponseEntity.ok(user);
 	}
-	
+
 	@PostMapping("/add-favorite-item")
 	@ResponseBody
+	@PreAuthorize("#dto.userID == authentication.principal.id")
 	public ResponseEntity<?> addFavorite(@Valid @RequestBody UserBookDTO dto) {
 		User user = userService.addFavorite(dto);
 
 		return ResponseEntity.ok(user);
 	}
-	
+
 	@DeleteMapping("/delete-read-item")
 	@ResponseBody
+	@PreAuthorize("#dto.userID == authentication.principal.id")
 	public ResponseEntity<?> deleteRead(@Valid @RequestBody UserBookDTO dto) {
 		User user = userService.deleteRead(dto);
 
 		return ResponseEntity.ok(user);
 	}
-	
+
 	@DeleteMapping("/delete-favorite-item")
 	@ResponseBody
+	@PreAuthorize("#dto.userID == authentication.principal.id")
 	public ResponseEntity<?> deleteFavorite(@Valid @RequestBody UserBookDTO dto) {
 		User user = userService.deleteFavorite(dto);
 
 		return ResponseEntity.ok(user);
 	}
-	
+
 	@GetMapping("/read-list/{id}")
 	@ResponseBody
-	public ResponseEntity<?> findRead(@PathVariable long id) {
-		List<Book> books = userService.findRead(id);
+	@PreAuthorize("#id == authentication.principal.id")
+	public ResponseEntity<?> findRead(@PathVariable long id,
+			@RequestParam(name = "pageSize", defaultValue = "5") int pageSize,
+			@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
+		Page<Book> books = userService.findRead(id, pageSize, pageNumber);
 
 		return ResponseEntity.ok(books);
 	}
-	
+
 	@GetMapping("/favorite-list/{id}")
 	@ResponseBody
-	public ResponseEntity<?> findFavorite(@PathVariable long id) {
-		List<Book> books = userService.findFavorite(id);
+	@PreAuthorize("#id == authentication.principal.id")
+	public ResponseEntity<?> findFavorite(@PathVariable long id,
+			@RequestParam(name = "pageSize", defaultValue = "5") int pageSize,
+			@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
+		Page<Book> books = userService.findFavorite(id, pageSize, pageNumber);
 
 		return ResponseEntity.ok(books);
 	}

@@ -10,10 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.SpringInitial.entity.Book;
-import com.example.SpringInitial.entity.User;
 import com.example.SpringInitial.model.BookDTO;
 import com.example.SpringInitial.model.BookUpdateDTO;
-import com.example.SpringInitial.model.UserUpdateDTO;
 import com.example.SpringInitial.repo.BookRepository;
 
 @Service
@@ -22,13 +20,28 @@ public class BookService {
 	@Autowired
 	private BookRepository bookRepository;
 
-	public Page<Book> findAll(int pageSize, int pageNumber){
+	public Page<Book> findAllActive(int pageSize, int pageNumber){
 		Pageable paged = PageRequest.of(pageNumber, pageSize);
-		return bookRepository.findAll(paged);
+		return bookRepository.findByActiveTrue(paged);
 	}
 	
-	public List<Book> findAll(){
-		return bookRepository.findAll();
+	public Optional<Book> findByIdActive(long id) {
+		return bookRepository.findByIdAndActiveTrue(id);
+	}
+	
+	public Page<Book> findByNameActive(String name, int pageSize, int pageNumber){
+		Pageable paged = PageRequest.of(pageNumber, pageSize);
+		return bookRepository.findByNameContainingAndActiveTrue(name, paged);
+	}
+	
+	public Page<Book> findByAuthorActive(String author, int pageSize, int pageNumber){
+		Pageable paged = PageRequest.of(pageNumber, pageSize);
+		return bookRepository.findByAuthorContainingAndActiveTrue(author, paged);
+	}
+	
+	public Page<Book> findByTypeActive(String type, int pageSize, int pageNumber){
+		Pageable paged = PageRequest.of(pageNumber, pageSize);
+		return bookRepository.findByTypeContainingAndActiveTrue(type, paged);
 	}
 	
 	public Book save(BookDTO bookDTO) {
@@ -44,7 +57,7 @@ public class BookService {
 	}
 	
 	public Book update(long id, BookUpdateDTO dto) {
-		Optional<Book> byId = bookRepository.findById(id);
+		Optional<Book> byId = bookRepository.findByIdAndActiveTrue(id);
 		if(byId.isPresent()) {
 			Book book = byId.get();
 			book.setDescription(dto.getDescription());
@@ -62,5 +75,4 @@ public class BookService {
 		}
 		throw new IllegalArgumentException("Book is not found");
 	}
-	
 }
