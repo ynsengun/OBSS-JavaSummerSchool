@@ -1,6 +1,5 @@
 package com.example.SpringInitial.repo;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -18,10 +17,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 	Page<Book> findByAuthorContainingAndActiveTrue(String author, Pageable pageable);
 	
 	Page<Book> findByTypeContainingAndActiveTrue(String type, Pageable pageable);
-	
-	Page<Book> findByReadUsers_UsernameIn(List<String> usernames, Pageable pageable);
-	
-	Page<Book> findByFavoriteUsers_UsernameIn(List<String> usernames, Pageable pageable);
 	
 	Optional<Book> findByIdAndActiveTrue(Long id);
 	

@@ -14,13 +14,22 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name = "USER")
+@JsonIdentityInfo(
+		generator = ObjectIdGenerators.PropertyGenerator.class,
+		property = "id")
 public class User extends EntityBase {
 
 	@Column(name = "USERNAME", length = 255, unique = true)
@@ -36,34 +45,20 @@ public class User extends EntityBase {
 	@JsonManagedReference
 	private Set<Role> roles;
 	
-	@ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-	@JoinTable(name = "USERS_BOOKS_READ",
-			joinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "ID") },
-			inverseJoinColumns = { @JoinColumn(name = "BOOK_ID", referencedColumnName = "ID") })
-	@JsonManagedReference
-	private Set<Book> readList;
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private Set<UserBookRead> userBookReads;
 	
-	@ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-	@JoinTable(name = "USERS_BOOKS_FAVORITE",
-			joinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "ID") },
-			inverseJoinColumns = { @JoinColumn(name = "BOOK_ID", referencedColumnName = "ID") })
-	@JsonManagedReference
-	private Set<Book> favoriteList;
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private Set<UserBookFavorite> userBookFavorites;
 
-	public Set<Book> getReadList() {
-		return readList;
+	public Set<UserBookFavorite> getUserBookFavorites() {
+		return userBookFavorites;
 	}
 
-	public void setReadList(Set<Book> readList) {
-		this.readList = readList;
-	}
-
-	public Set<Book> getFavoriteList() {
-		return favoriteList;
-	}
-
-	public void setFavoriteList(Set<Book> favoriteList) {
-		this.favoriteList = favoriteList;
+	public void setUserBookFavorites(Set<UserBookFavorite> userBookFavorites) {
+		this.userBookFavorites = userBookFavorites;
 	}
 
 	public String getUsername() {
@@ -88,5 +83,13 @@ public class User extends EntityBase {
 
 	public void setRoles(Set<Role> list) {
 		this.roles = list;
+	}
+
+	public Set<UserBookRead> getUserBookReads() {
+		return userBookReads;
+	}
+
+	public void setUserBookReads(Set<UserBookRead> userBookReads) {
+		this.userBookReads = userBookReads;
 	}
 }

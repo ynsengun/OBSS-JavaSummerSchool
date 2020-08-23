@@ -1,8 +1,6 @@
 package com.example.SpringInitial.service;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,11 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.SpringInitial.entity.Book;
 import com.example.SpringInitial.entity.Role;
 import com.example.SpringInitial.entity.User;
 import com.example.SpringInitial.model.MyUserDetails;
-import com.example.SpringInitial.model.UserBookDTO;
 import com.example.SpringInitial.model.UserDTO;
 import com.example.SpringInitial.model.UserUpdateDTO;
 import com.example.SpringInitial.repo.BookRepository;
@@ -110,109 +106,5 @@ public class UserService implements UserDetailsService {
 			return new MyUserDetails(byUserName.get());
 		}
 		throw new UsernameNotFoundException("User is not found");
-	}
-	
-	// ------------------ List operations ----------------------- //
-
-	public User addRead(UserBookDTO dto) {
-		Optional<User> userById = userRepository.findByIdAndActiveTrue(dto.getUserID());
-		
-		if (userById.isPresent()) {
-			Optional<Book> bookById = bookRepository.findByIdAndActiveTrue(dto.getBookID());
-			
-			if (bookById.isPresent()) {
-				User user = userById.get();
-				Book book = bookById.get();
-
-				user.getReadList().add(book);
-
-				return userRepository.save(user);
-			}
-			throw new UsernameNotFoundException("Book is not found");
-		}
-		throw new UsernameNotFoundException("User is not found");
-	}
-
-	public User addFavorite(UserBookDTO dto) {
-		Optional<User> userById = userRepository.findByIdAndActiveTrue(dto.getUserID());
-
-		if (userById.isPresent()) {
-			Optional<Book> bookById = bookRepository.findByIdAndActiveTrue(dto.getBookID());
-			
-			if (bookById.isPresent()) {
-				User user = userById.get();
-				Book book = bookById.get();
-
-				user.getFavoriteList().add(book);
-
-				return userRepository.save(user);
-			}
-			throw new UsernameNotFoundException("Book is not found");
-		}
-		throw new UsernameNotFoundException("User is not found");
-	}
-	
-	public User deleteRead(UserBookDTO dto) {
-		Optional<User> userById = userRepository.findByIdAndActiveTrue(dto.getUserID());
-
-		if (userById.isPresent()) {
-			Optional<Book> bookById = bookRepository.findByIdAndActiveTrue(dto.getBookID());
-			
-			if (bookById.isPresent()) {
-				User user = userById.get();
-				Book book = bookById.get();
-
-				user.getReadList().remove(book);
-
-				return userRepository.save(user);
-			}
-			throw new UsernameNotFoundException("Book is not found");
-		}
-		throw new UsernameNotFoundException("User is not found");
-	}
-	
-	public User deleteFavorite(UserBookDTO dto) {
-		Optional<User> userById = userRepository.findByIdAndActiveTrue(dto.getUserID());
-
-		if (userById.isPresent()) {
-			Optional<Book> bookById = bookRepository.findByIdAndActiveTrue(dto.getBookID());
-			
-			if (bookById.isPresent()) {
-				User user = userById.get();
-				Book book = bookById.get();
-
-				user.getFavoriteList().remove(book);
-
-				return userRepository.save(user);
-			}
-			throw new UsernameNotFoundException("Book is not found");
-		}
-		throw new UsernameNotFoundException("User is not found");
-	}
-	
-	public Page<Book> findRead(long userID, int pageSize, int pageNumber){
-		Optional<User> userById = userRepository.findByIdAndActiveTrue(userID);
-		
-		if(userById.isPresent()) {
-			User user = userById.get();
-			Pageable paged = PageRequest.of(pageNumber, pageSize);
-			
-			return bookRepository.findByReadUsers_UsernameIn(Arrays.asList(user.getUsername()), paged); 
-		}
-		
-		return null;
-	}
-	
-	public Page<Book> findFavorite(long userID, int pageSize, int pageNumber){
-		Optional<User> userById = userRepository.findByIdAndActiveTrue(userID);
-		
-		if(userById.isPresent()) {
-			User user = userById.get();
-			Pageable paged = PageRequest.of(pageNumber, pageSize);
-			
-			return bookRepository.findByFavoriteUsers_UsernameIn(Arrays.asList(user.getUsername()), paged); 
-		}
-		
-		return null;
 	}
 }

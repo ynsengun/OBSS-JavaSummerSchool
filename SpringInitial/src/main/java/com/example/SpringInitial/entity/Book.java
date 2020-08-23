@@ -4,13 +4,22 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name = "BOOK")
+@JsonIdentityInfo(
+		generator = ObjectIdGenerators.PropertyGenerator.class,
+		property = "id")
 public class Book extends EntityBase {
 
 	@Column(name = "NAME", length = 255)
@@ -28,13 +37,13 @@ public class Book extends EntityBase {
 	@Column(name = "DESCRIPTION", length = 255)
 	private String description;
 	
-	@ManyToMany(mappedBy = "readList")
-	@JsonBackReference
-	private Set<User> readUsers;
+	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private Set<UserBookRead> userBookReads;
 	
-	@ManyToMany(mappedBy = "favoriteList")
-	@JsonBackReference
-	private Set<User> favoriteUsers;
+	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private Set<UserBookFavorite> userBookFavorites;
 	
 	public long getPageNumber() {
 		return pageNumber;
@@ -50,22 +59,6 @@ public class Book extends EntityBase {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Set<User> getReadUsers() {
-		return readUsers;
-	}
-
-	public void setReadUsers(Set<User> readUsers) {
-		this.readUsers = readUsers;
-	}
-
-	public Set<User> getFavoriteUsers() {
-		return favoriteUsers;
-	}
-
-	public void setFavoriteUsers(Set<User> favoriteUsers) {
-		this.favoriteUsers = favoriteUsers;
 	}
 
 	public String getAuthor() {
@@ -90,5 +83,21 @@ public class Book extends EntityBase {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Set<UserBookRead> getUserBookReads() {
+		return userBookReads;
+	}
+
+	public void setUserBookReads(Set<UserBookRead> userBookReads) {
+		this.userBookReads = userBookReads;
+	}
+
+	public Set<UserBookFavorite> getUserBookFavorites() {
+		return userBookFavorites;
+	}
+
+	public void setUserBookFavorites(Set<UserBookFavorite> userBookFavorites) {
+		this.userBookFavorites = userBookFavorites;
 	}
 }
