@@ -1,5 +1,6 @@
 import React from "react";
-import { Menu, Container, Icon } from "semantic-ui-react";
+import { Menu, Container, Icon, Segment } from "semantic-ui-react";
+import { NavLink } from "react-router-dom";
 
 class Navbar extends React.Component {
   constructor(props) {
@@ -13,8 +14,8 @@ class Navbar extends React.Component {
     const { activeItem } = this.state;
 
     return (
-      <div>
-        <Menu pointing secondary size="huge">
+      <Segment inverted>
+        <Menu inverted pointing secondary size="huge">
           <Container>
             <Menu.Item
               name="home"
@@ -38,16 +39,24 @@ class Navbar extends React.Component {
                 name="login"
                 active={activeItem === "login"}
                 onClick={this.handleItemClick}
-              />
+              >
+                <NavLink to="/login">
+                  Login
+                </NavLink>
+              </Menu.Item>
               <Menu.Item
-                name="sign up"
-                active={activeItem === "sign up"}
+                name="register"
+                active={activeItem === "register"}
                 onClick={this.handleItemClick}
-              />
+              >
+                <NavLink to="/register">
+                  Register
+                </NavLink>
+              </Menu.Item>
             </Menu.Menu>
           </Container>
         </Menu>
-      </div>
+      </Segment>
     );
   }
 }
