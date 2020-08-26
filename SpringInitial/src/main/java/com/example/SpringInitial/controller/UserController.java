@@ -1,7 +1,10 @@
 package com.example.SpringInitial.controller;
 
+import java.security.Principal;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -10,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.SpringInitial.entity.Book;
 import com.example.SpringInitial.entity.User;
+import com.example.SpringInitial.model.MyUserDetails;
 import com.example.SpringInitial.model.UserBookDTO;
 import com.example.SpringInitial.model.UserDTO;
 import com.example.SpringInitial.model.UserUpdateDTO;
@@ -59,6 +64,16 @@ public class UserController {
 		}
 
 		throw new IllegalArgumentException("User is not found");
+	}
+	
+	@GetMapping("/auth")
+	@ResponseBody
+	public ResponseEntity<?> getAuth(Authentication authentication){
+		Map<String,Object> resultMap = new HashMap<>();
+		resultMap.put("id", ((MyUserDetails)authentication.getPrincipal()).getId());
+		resultMap.put("username", ((MyUserDetails)authentication.getPrincipal()).getUsername());
+		resultMap.put("roles", ((MyUserDetails)authentication.getPrincipal()).getRoles());
+		return ResponseEntity.ok(resultMap);
 	}
 
 	@GetMapping("/search")

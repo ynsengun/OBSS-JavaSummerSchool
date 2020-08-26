@@ -57,17 +57,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and().authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll()
-				.antMatchers(HttpMethod.POST, "/api/users").permitAll().anyRequest().hasAnyRole("ADMIN", "USER").and()
-				.exceptionHandling().accessDeniedHandler((req, resp, ex) -> resp.setStatus(SC_FORBIDDEN)) // if someone
-																											// tries to
-																											// access
-																											// protected
-																											// resource
-																											// but
-																											// doesn't
-																											// have
-																											// enough
-																											// permissions
+				.antMatchers(HttpMethod.POST, "/api/users").permitAll().antMatchers(HttpMethod.GET, "/api/books")
+				.permitAll().anyRequest().hasAnyRole("ADMIN", "USER").and().exceptionHandling()
+				.accessDeniedHandler((req, resp, ex) -> resp.setStatus(SC_FORBIDDEN)) // if someone
+																						// tries to
+																						// access
+																						// protected
+																						// resource
+																						// but
+																						// doesn't
+																						// have
+																						// enough
+																						// permissions
 				.authenticationEntryPoint((req, resp, ex) -> resp.setStatus(SC_UNAUTHORIZED)).and().formLogin()
 				.loginProcessingUrl("/login").successHandler((req, resp, auth) -> resp.setStatus(SC_OK)) // success
 																											// authentication

@@ -9,7 +9,6 @@ class Register extends React.Component {
     super(props);
 
     this.state = {
-      counter: 1,
       username: "",
       password: "",
       passwordRepeat: "",
@@ -27,7 +26,6 @@ class Register extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.setState({ counter: this.state.counter + 1 });
 
     const { username, password, passwordRepeat } = this.state;
     let errorOccured = false;
@@ -88,12 +86,7 @@ class Register extends React.Component {
   };
 
   render() {
-    const {
-      counter,
-      usernameError,
-      passwordError,
-      passwordRepeatError,
-    } = this.state;
+    const { usernameError, passwordError, passwordRepeatError } = this.state;
 
     return (
       <div>
@@ -101,14 +94,11 @@ class Register extends React.Component {
           <Grid>
             <Grid.Row columns="equal" centered>
               <Grid.Column width={8}>
-                <p>Counter: {counter}</p>
-
                 <Form
                   onSubmit={this.handleSubmit}
                   onReset={(e) => {
                     e.preventDefault();
                     this.setState({
-                      counter: 0,
                       username: "",
                       password: "",
                       passwordRepeat: "",

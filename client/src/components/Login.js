@@ -4,6 +4,9 @@ import { useHistory } from "react-router-dom";
 import fetch from "isomorphic-unfetch";
 import { toast } from "react-toastify";
 
+import { saveAuth } from "../util/Authentication";
+import { checkResponse } from "../util/Response";
+
 const Login = (props) => {
   const history = useHistory();
 
@@ -58,20 +61,23 @@ const Login = (props) => {
       body: formData,
       credentials: "include",
     })
-      .then((r) => {
-        if (r.ok) {
-          return r;
-        }
-        if (r.status === 401 || r.status === 403 || r.status === 500) {
-          return Promise.reject(new Error("An error occured"));
-        }
-      })
-      .then((response) => {
-        toast.success("Login is successful\nRedirecting to dashboard...");
-        setTimeout(() => {
-          history.push("/dashboard");
-        }, 1500);
-      })
+      .then((r) => checkResponse(r))
+      .then(() =>
+        fetch("http://localhost:8080/api/users/auth", {
+          method: "GET",
+          credentials: "include",
+        })
+          .then((r) => checkResponse(r))
+          .then((r) => r.json())
+          .then((response) => {
+            console.log("----------", response);
+            saveAuth(response);
+            toast.success("Login is successful... Redirecting to dashboard...");
+            setTimeout(() => {
+              history.push("/library");
+            }, 1500);
+          })
+      )
       .catch((e) => {
         toast.error(e.message);
       });
