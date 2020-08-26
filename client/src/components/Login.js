@@ -70,7 +70,6 @@ const Login = (props) => {
           .then((r) => checkResponse(r))
           .then((r) => r.json())
           .then((response) => {
-            console.log("----------", response);
             saveAuth(response);
             toast.success("Login is successful... Redirecting to dashboard...");
             setTimeout(() => {

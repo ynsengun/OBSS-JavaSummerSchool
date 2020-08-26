@@ -1,5 +1,9 @@
 package com.example.SpringInitial.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +45,27 @@ public class FavoriteListController {
 		Page<UserBookFavorite> books = favoriteListService.find(id, pageSize, pageNumber);
 
 		return ResponseEntity.ok(books);
+	}
+	
+	@GetMapping("")
+	@ResponseBody
+	@PreAuthorize("#userID == authentication.principal.id")
+	public ResponseEntity<?> getExistence(@RequestParam long userID, @RequestParam long bookID) {
+		UserBookDTO dto = new UserBookDTO();
+		dto.setUserID(userID);
+		dto.setBookID(bookID);
+		Optional<UserBookFavorite> relation = favoriteListService.findExistence(dto);
+		
+		System.out.println("hereeeeee");
+		
+		if(relation.isPresent()) {
+			Map<String, Boolean> resultMap = new HashMap<>();
+			resultMap.put("exist",true);
+			return ResponseEntity.ok(resultMap);
+		}
+		Map<String, Boolean> resultMap = new HashMap<>();
+		resultMap.put("exist",false);
+		return ResponseEntity.ok(resultMap);
 	}
 	
 	@PostMapping("")

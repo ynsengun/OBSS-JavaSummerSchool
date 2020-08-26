@@ -43,6 +43,11 @@ public class FavoriteListService {
 
 		return null;
 	}
+	
+	public Optional<UserBookFavorite> findExistence(UserBookDTO dto) {
+		return favoriteListRepository
+				.findByUser_IdInAndBook_IdIn(Arrays.asList(dto.getUserID()), Arrays.asList(dto.getBookID()));
+	}
 
 	public UserBookFavorite save(UserBookDTO dto) {
 		Optional<User> userById = userRepository.findByIdAndActiveTrue(dto.getUserID());
@@ -51,8 +56,7 @@ public class FavoriteListService {
 			Optional<Book> bookById = bookRepository.findByIdAndActiveTrue(dto.getBookID());
 
 			if (bookById.isPresent()) {
-				Optional<UserBookFavorite> byId = favoriteListRepository
-						.findByUser_IdInAndBook_IdIn(Arrays.asList(dto.getUserID()), Arrays.asList(dto.getBookID()));
+				Optional<UserBookFavorite> byId = findExistence(dto);
 
 				if (!byId.isPresent()) {
 					User user = userById.get();
@@ -79,8 +83,7 @@ public class FavoriteListService {
 			Optional<Book> bookById = bookRepository.findById(dto.getBookID());
 
 			if (bookById.isPresent()) {
-				Optional<UserBookFavorite> byId = favoriteListRepository
-						.findByUser_IdInAndBook_IdIn(Arrays.asList(dto.getUserID()), Arrays.asList(dto.getBookID()));
+				Optional<UserBookFavorite> byId = findExistence(dto);
 
 				if (byId.isPresent()) {
 					UserBookFavorite entry = byId.get();
