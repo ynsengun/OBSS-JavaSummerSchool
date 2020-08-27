@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.SpringInitial.entity.Book;
 import com.example.SpringInitial.entity.User;
+import com.example.SpringInitial.entity.UserBookFavorite;
 import com.example.SpringInitial.entity.UserBookRead;
 import com.example.SpringInitial.model.ListDeleteDTO;
 import com.example.SpringInitial.model.UserBookDTO;
@@ -42,6 +43,11 @@ public class ReadListService {
 
 		return null;
 	}
+	
+	public Optional<UserBookRead> findExistence(UserBookDTO dto) {
+		return readListRepository
+				.findByUser_IdInAndBook_IdIn(Arrays.asList(dto.getUserID()), Arrays.asList(dto.getBookID()));
+	}
 
 	public UserBookRead save(UserBookDTO dto) {
 		Optional<User> userById = userRepository.findByIdAndActiveTrue(dto.getUserID());
@@ -50,8 +56,7 @@ public class ReadListService {
 			Optional<Book> bookById = bookRepository.findByIdAndActiveTrue(dto.getBookID());
 
 			if (bookById.isPresent()) {
-				Optional<UserBookRead> byId = readListRepository
-						.findByUser_IdInAndBook_IdIn(Arrays.asList(dto.getUserID()), Arrays.asList(dto.getBookID()));
+				Optional<UserBookRead> byId = findExistence(dto);
 
 				if (!byId.isPresent()) {
 
@@ -79,8 +84,7 @@ public class ReadListService {
 			Optional<Book> bookById = bookRepository.findById(dto.getBookID());
 
 			if (bookById.isPresent()) {
-				Optional<UserBookRead> byId = readListRepository
-						.findByUser_IdInAndBook_IdIn(Arrays.asList(dto.getUserID()), Arrays.asList(dto.getBookID()));
+				Optional<UserBookRead> byId = findExistence(dto);
 
 				if (byId.isPresent()) {
 					UserBookRead entry = byId.get();

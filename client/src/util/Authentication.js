@@ -21,6 +21,10 @@ export function saveAuth(info) {
   localStorage.setItem("authInfo", JSON.stringify(authJson));
 }
 
+export function cleanAuth() {
+  localStorage.removeItem("authInfo");
+}
+
 export function isAuthenticated() {
   let auth = localStorage.getItem("authInfo");
   return auth != null;

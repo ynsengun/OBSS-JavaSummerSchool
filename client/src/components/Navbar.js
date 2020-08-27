@@ -1,12 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Menu, Container, Icon, Segment, Label } from "semantic-ui-react";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import {
+  cleanAuth,
+  isAuthenticated,
+  isUser,
+  isAdmin,
+  getAuthName,
+} from "../util/Authentication";
 
 function Navbar() {
   const [activeItem, setActiveItem] = useState("home");
+  const [auth, setAuth] = useState(isAuthenticated());
 
   const history = useHistory();
+
+  useEffect(() => {
+    history.listen(() => {
+      setAuth(isAuthenticated());
+    });
+  }, []);
 
   const handleItemClick = (e, { name }) => {
     if (name === "home") {
@@ -27,10 +41,13 @@ function Navbar() {
     })
       .then((r) => {
         if (r.ok) {
-          toast.success("Logout is successful");
-          return;
-        }
-        if (r.status === 401 || r.status === 403 || r.status === 500) {
+          cleanAuth();
+          toast.success("Logout is successful... Redirecting to home page...");
+          setTimeout(() => {
+            history.push("/");
+          }, 1500);
+          return r;
+        } else {
           return Promise.reject(new Error("An error occured"));
         }
       })
@@ -50,49 +67,63 @@ function Navbar() {
           >
             <Icon name="book" /> Home
           </Menu.Item>
-          <Menu.Item
-            name="library"
-            active={activeItem === "library"}
-            onClick={handleItemClick}
-          />
-          <Menu.Item
-            name="read list"
-            active={activeItem === "read list"}
-            onClick={handleItemClick}
-          />
-          <Menu.Item
-            name="favorite list"
-            active={activeItem === "favorite list"}
-            onClick={handleItemClick}
-          />
-          <Menu.Item
-            name="discover"
-            active={activeItem === "discover"}
-            onClick={handleItemClick}
-          />
+          {isAuthenticated() && isUser() ? (
+            <React.Fragment>
+              <Menu.Item
+                name="library"
+                active={activeItem === "library"}
+                onClick={handleItemClick}
+              />
+              <Menu.Item
+                name="read list"
+                active={activeItem === "read list"}
+                onClick={handleItemClick}
+              />
+              <Menu.Item
+                name="favorite list"
+                active={activeItem === "favorite list"}
+                onClick={handleItemClick}
+              />
+              <Menu.Item
+                name="discover"
+                active={activeItem === "discover"}
+                onClick={handleItemClick}
+              />
+            </React.Fragment>
+          ) : null}
           <Menu.Menu position="right">
-            <Menu.Item
-              name="login"
-              active={activeItem === "login"}
-              onClick={handleItemClick}
-            />
-            <Menu.Item
-              name="register"
-              active={activeItem === "register"}
-              onClick={handleItemClick}
-            />
-            <Menu.Item
-              name="entities"
-              active={activeItem === "entities"}
-              onClick={handleItemClick}
-            />
-            <Menu.Item
-              name="account"
-              active={activeItem === "account"}
-              onClick={handleItemClick}
-            />
-            <Menu.Item name="logout" onClick={handleLogout} />
-            <Menu.Item>{`Welcome ...`}</Menu.Item>
+            {!isAuthenticated() ? (
+              <React.Fragment>
+                <Menu.Item
+                  name="login"
+                  active={activeItem === "login"}
+                  onClick={handleItemClick}
+                />
+                <Menu.Item
+                  name="register"
+                  active={activeItem === "register"}
+                  onClick={handleItemClick}
+                />
+              </React.Fragment>
+            ) : null}
+            {isAuthenticated() && isAdmin() ? (
+              <Menu.Item
+                name="entities"
+                active={activeItem === "entities"}
+                onClick={handleItemClick}
+              />
+            ) : null}
+            {isAuthenticated() ? (
+              <React.Fragment>
+                <Menu.Item
+                  name="account"
+                  active={activeItem === "account"}
+                  onClick={handleItemClick}
+                />
+                <Menu.Item name="logout" onClick={handleLogout} />
+                <Menu.Item>{`Welcome ${getAuthName()}`}</Menu.Item>
+              </React.Fragment>
+            ) : null}
           </Menu.Menu>
         </Container>
       </Menu>

@@ -71,7 +71,7 @@ public class BookController {
 	public ResponseEntity<?> getByAuthor(@RequestParam(name = "author", defaultValue = "") String author,
 			@RequestParam(name = "pageSize", defaultValue = "5") int pageSize,
 			@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
-		Page<Book> books = bookService.findByNameActive(author, pageSize, pageNumber);
+		Page<Book> books = bookService.findByAuthorActive(author, pageSize, pageNumber);
 
 		return ResponseEntity.ok(books);
 	}
@@ -81,7 +81,7 @@ public class BookController {
 	public ResponseEntity<?> getByType(@RequestParam(name = "type", defaultValue = "") String type,
 			@RequestParam(name = "pageSize", defaultValue = "5") int pageSize,
 			@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
-		Page<Book> books = bookService.findByNameActive(type, pageSize, pageNumber);
+		Page<Book> books = bookService.findByTypeActive(type, pageSize, pageNumber);
 
 		return ResponseEntity.ok(books);
 	}

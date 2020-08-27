@@ -1,5 +1,9 @@
 package com.example.SpringInitial.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.SpringInitial.entity.UserBookFavorite;
 import com.example.SpringInitial.entity.UserBookRead;
 import com.example.SpringInitial.model.ListDeleteDTO;
 import com.example.SpringInitial.model.UserBookDTO;
@@ -41,6 +46,25 @@ public class ReadListController {
 		Page<UserBookRead> books = readListService.find(id, pageSize, pageNumber);
 
 		return ResponseEntity.ok(books);
+	}
+	
+	@GetMapping("")
+	@ResponseBody
+	@PreAuthorize("#userID == authentication.principal.id")
+	public ResponseEntity<?> getExistence(@RequestParam long userID, @RequestParam long bookID) {
+		UserBookDTO dto = new UserBookDTO();
+		dto.setUserID(userID);
+		dto.setBookID(bookID);
+		Optional<UserBookRead> relation = readListService.findExistence(dto);
+		
+		if(relation.isPresent()) {
+			Map<String, Boolean> resultMap = new HashMap<>();
+			resultMap.put("exist",true);
+			return ResponseEntity.ok(resultMap);
+		}
+		Map<String, Boolean> resultMap = new HashMap<>();
+		resultMap.put("exist",false);
+		return ResponseEntity.ok(resultMap);
 	}
 	
 	@PostMapping("")

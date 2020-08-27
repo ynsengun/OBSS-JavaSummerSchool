@@ -56,8 +56,6 @@ public class FavoriteListController {
 		dto.setBookID(bookID);
 		Optional<UserBookFavorite> relation = favoriteListService.findExistence(dto);
 		
-		System.out.println("hereeeeee");
-		
 		if(relation.isPresent()) {
 			Map<String, Boolean> resultMap = new HashMap<>();
 			resultMap.put("exist",true);

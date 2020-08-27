@@ -1,6 +1,13 @@
 import React, { useState } from "react";
-import { Container, Grid, Divider, Form, Button } from "semantic-ui-react";
-import { useHistory } from "react-router-dom";
+import {
+  Container,
+  Grid,
+  Divider,
+  Form,
+  Button,
+  Card,
+} from "semantic-ui-react";
+import { useHistory, Link } from "react-router-dom";
 import fetch from "isomorphic-unfetch";
 import { toast } from "react-toastify";
 
@@ -71,9 +78,9 @@ const Login = (props) => {
           .then((r) => r.json())
           .then((response) => {
             saveAuth(response);
-            toast.success("Login is successful... Redirecting to dashboard...");
+            toast.success("Login is successful... Redirecting to home page...");
             setTimeout(() => {
-              history.push("/library");
+              history.push("/");
             }, 1500);
           })
       )
@@ -88,54 +95,50 @@ const Login = (props) => {
         <Grid>
           <Grid.Row columns="equal" centered>
             <Grid.Column width={8}>
-              <Form
-                onSubmit={handleSubmit}
-                onReset={(e) => {
-                  e.preventDefault();
-                  setUsernamePassword({ username: "", password: "" });
-                }}
-              >
-                <Form.Field>
-                  <label>User Name:</label>
-                  <Form.Input
-                    type="email"
-                    name="username"
-                    required
-                    value={usernamePassword.username}
-                    onChange={handleChange}
-                    error={usernamePasswordError.username}
-                  />
-                </Form.Field>
+              <Card fluid className="mt-5">
+                <Card.Content>
+                  <Form
+                    onSubmit={handleSubmit}
+                    onReset={(e) => {
+                      e.preventDefault();
+                      setUsernamePassword({ username: "", password: "" });
+                    }}
+                  >
+                    <Form.Field>
+                      <label>User Name:</label>
+                      <Form.Input
+                        type="email"
+                        name="username"
+                        required
+                        value={usernamePassword.username}
+                        onChange={handleChange}
+                        error={usernamePasswordError.username}
+                      />
+                    </Form.Field>
 
-                <Form.Field>
-                  <label>Password:</label>
-                  <Form.Input
-                    type="password"
-                    name="password"
-                    required
-                    value={usernamePassword.password}
-                    onChange={handleChange}
-                    error={usernamePasswordError.password}
-                  />
-                </Form.Field>
+                    <Form.Field>
+                      <label>Password:</label>
+                      <Form.Input
+                        type="password"
+                        name="password"
+                        required
+                        value={usernamePassword.password}
+                        onChange={handleChange}
+                        error={usernamePasswordError.password}
+                      />
+                    </Form.Field>
 
-                <Button.Group fluid>
-                  <Button type="reset" color="teal">
-                    Reset
-                  </Button>
-                  <Button type="submit">Submit</Button>
-                </Button.Group>
-              </Form>
-              <Divider />
-              <Button
-                type="button"
-                color="primary"
-                onClick={() => {
-                  history.push("/register");
-                }}
-              >
-                Register
-              </Button>
+                    <Button.Group fluid>
+                      <Button type="reset" color="teal">
+                        Reset
+                      </Button>
+                      <Button type="submit">Submit</Button>
+                    </Button.Group>
+                  </Form>
+                  <Divider />
+                  <Link to="/register">Don't have an account? Register</Link>
+                </Card.Content>
+              </Card>
             </Grid.Column>
           </Grid.Row>
         </Grid>

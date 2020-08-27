@@ -1,60 +1,130 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import { Card, Table, Label, Menu, Icon, Button } from "semantic-ui-react";
 
-import { isAuthenticated, isUser, isAdmin } from "../util/Authentication";
+import { isAuthenticated, isUser } from "../util/Authentication";
 
 export default function BookPaginationTable(props) {
   const {
     data,
     changePageTo,
     type,
-    exitsInFavoriteList,
+    existInFavoriteList,
     handleFavorite,
+    existInReadList,
+    handleRead,
   } = props;
 
-  const Buttons = (index, bookID) => {
+  const history = useHistory();
+
+  // console.log("paginationnnnn data  ", data);
+  // console.log("paginationnnnn fav  ", existInFavoriteList);
+  // console.log("paginationnnnn read  ", existInReadList);
+
+  const getButtons = (index, bookID) => {
+    if (!isAuthenticated()) {
+      return null;
+    }
+
     const getFavoriteColor = () => {
-      if (!exitsInFavoriteList || exitsInFavoriteList.length <= index) {
+      if (!existInFavoriteList || existInFavoriteList.length <= index) {
         return "green";
       }
-      return exitsInFavoriteList[index] ? "youtube" : "green";
+      return existInFavoriteList[index] ? "youtube" : "green";
     };
 
-    // if (type === "read-list") {
-    //   return <Table.Cell collapsing></Table.Cell>;
-    // }
+    const getReadColor = () => {
+      if (!existInReadList || existInReadList.length <= index) {
+        return "green";
+      }
+      return existInReadList[index] ? "youtube" : "green";
+    };
 
-    return (
-      // {/* {isAuthenticated() && ( */}
-      <Table.Cell collapsing>
-        {/* {isUser() && ( */}
-        <Button color="teal" size="small">
-          <Icon name="info" className="m-0" />
-        </Button>
-        <Button
-          color={getFavoriteColor()}
-          size="small"
-          onClick={() => {
-            handleFavorite(index, bookID);
-          }}
-        >
-          <Icon name="heart" className="m-0" />
-        </Button>
-        <Button color="green" size="small">
-          <Icon name="book" className="m-0" />
-        </Button>
-        {/* )} */}
-        {/* {isAdmin() && ( */}
-        <Button color="yellow" size="small">
-          <Icon name="edit" className="m-0" />
-        </Button>
-        <Button color="red" size="small">
-          <Icon name="delete" className="m-0" />
-        </Button>
-        {/* )} */}
-      </Table.Cell>
-      // {/* )} */}
+    const infoButton = (
+      <Button
+        color="teal"
+        size="small"
+        onClick={() => {
+          history.push(`/library/${bookID}`);
+        }}
+      >
+        <Icon name="info" className="m-0" />
+      </Button>
     );
+
+    const favButton = (
+      <Button
+        color={getFavoriteColor()}
+        size="small"
+        onClick={() => {
+          handleFavorite(index, bookID);
+        }}
+      >
+        <Icon name="heart" className="m-0" />
+      </Button>
+    );
+
+    const readButton = (
+      <Button
+        color={getReadColor()}
+        size="small"
+        onClick={() => {
+          handleRead(index, bookID);
+        }}
+      >
+        <Icon name="book" className="m-0" />
+      </Button>
+    );
+
+    const editButton = (
+      <Button color="yellow" size="small">
+        <Icon name="edit" className="m-0" />
+      </Button>
+    );
+
+    const deleteButton = (
+      <Button color="red" size="small">
+        <Icon name="delete" className="m-0" />
+      </Button>
+    );
+
+    if (type === "read") {
+      return <Table.Cell collapsing>{readButton}</Table.Cell>;
+    } else if (type === "favorite") {
+      return <Table.Cell collapsing>{favButton}</Table.Cell>;
+    } else if (type === "regular" && isUser()) {
+      return (
+        <Table.Cell collapsing>
+          {infoButton}
+          {favButton}
+          {readButton}
+        </Table.Cell>
+      );
+    } else if (type === "entities") {
+      return (
+        <Table.Cell collapsing>
+          {editButton}
+          {deleteButton}
+        </Table.Cell>
+      );
+    }
+  };
+
+  const getColumnNumber = () => {
+    if (isAuthenticated()) {
+      if (type === "read" || type === "favorite") {
+        return "8";
+      }
+      return 7;
+    }
+    return 6;
+  };
+
+  const getDateColumn = (index) => {
+    if (type !== "read" && type !== "favorite") {
+      return null;
+    }
+    return data.content[index].date;
   };
 
   return (
@@ -68,7 +138,10 @@ export default function BookPaginationTable(props) {
             <Table.HeaderCell>Type</Table.HeaderCell>
             <Table.HeaderCell>Page</Table.HeaderCell>
             <Table.HeaderCell>Description</Table.HeaderCell>
-            <Table.HeaderCell></Table.HeaderCell>
+            {type === "read" || type === "favorite" ? (
+              <Table.HeaderCell>{`${type} date`}</Table.HeaderCell>
+            ) : null}
+            {isAuthenticated() ? <Table.HeaderCell></Table.HeaderCell> : null}
           </Table.Row>
         </Table.Header>
 
@@ -85,15 +158,15 @@ export default function BookPaginationTable(props) {
                 <Table.Cell>{value.type}</Table.Cell>
                 <Table.Cell>{value.pageNumber}</Table.Cell>
                 <Table.Cell>{value.description}</Table.Cell>
-                {Buttons(index, value.id)}
+                {getDateColumn(index)}
+                {getButtons(index, value.id)}
               </Table.Row>
             ))}
         </Table.Body>
 
         <Table.Footer>
           <Table.Row textAlign="center">
-            <Table.HeaderCell colSpan="7">
-              {/* {isAuthenticated() ? "7" : "6"} */}
+            <Table.HeaderCell colSpan={getColumnNumber()}>
               <Menu pagination secondary>
                 <Menu.Item
                   as="a"

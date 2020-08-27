@@ -1,8 +1,16 @@
 import React from "react";
-import { Container, Form, Button, Grid, Divider } from "semantic-ui-react";
+import {
+  Container,
+  Form,
+  Button,
+  Grid,
+  Divider,
+  Card,
+} from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
 import fetch from "isomorphic-unfetch";
+import { checkResponse } from "../util/Response";
 
 class Register extends React.Component {
   constructor(props) {
@@ -64,14 +72,7 @@ class Register extends React.Component {
         },
         body: JSON.stringify({ username, password }),
       })
-        .then((r) => {
-          if (r.ok) {
-            return r;
-          }
-          if (r.status === 401 || r.status === 403 || r.status === 500) {
-            return Promise.reject(new Error());
-          }
-        })
+        .then((r) => checkResponse(r))
         .then((r) => r.json())
         .then((response) => {
           toast.success("Registration is successful");
@@ -80,7 +81,7 @@ class Register extends React.Component {
           }, 1500);
         })
         .catch((e) => {
-          toast.warning("An error occured");
+          toast.error("This username is already exist");
         });
     }
   };
@@ -94,62 +95,66 @@ class Register extends React.Component {
           <Grid>
             <Grid.Row columns="equal" centered>
               <Grid.Column width={8}>
-                <Form
-                  onSubmit={this.handleSubmit}
-                  onReset={(e) => {
-                    e.preventDefault();
-                    this.setState({
-                      username: "",
-                      password: "",
-                      passwordRepeat: "",
-                    });
-                  }}
-                >
-                  <Form.Field>
-                    <label>User Name:</label>
-                    <Form.Input
-                      type="email"
-                      name="username"
-                      required
-                      value={this.state.username}
-                      onChange={this.handleChange}
-                      error={usernameError}
-                    />
-                  </Form.Field>
+                <Card fluid className="mt-5">
+                  <Card.Content>
+                    <Form
+                      onSubmit={this.handleSubmit}
+                      onReset={(e) => {
+                        e.preventDefault();
+                        this.setState({
+                          username: "",
+                          password: "",
+                          passwordRepeat: "",
+                        });
+                      }}
+                    >
+                      <Form.Field>
+                        <label>User Name:</label>
+                        <Form.Input
+                          type="email"
+                          name="username"
+                          required
+                          value={this.state.username}
+                          onChange={this.handleChange}
+                          error={usernameError}
+                        />
+                      </Form.Field>
 
-                  <Form.Field>
-                    <label>Password:</label>
-                    <Form.Input
-                      type="password"
-                      name="password"
-                      required
-                      value={this.state.password}
-                      onChange={this.handleChange}
-                      error={passwordError}
-                    />
-                  </Form.Field>
+                      <Form.Field>
+                        <label>Password:</label>
+                        <Form.Input
+                          type="password"
+                          name="password"
+                          required
+                          value={this.state.password}
+                          onChange={this.handleChange}
+                          error={passwordError}
+                        />
+                      </Form.Field>
 
-                  <Form.Field>
-                    <label>Password (repeat):</label>
-                    <Form.Input
-                      type="password"
-                      name="passwordRepeat"
-                      required
-                      value={this.state.passwordRepeat}
-                      onChange={this.handleChange}
-                      error={passwordRepeatError}
-                    />
-                  </Form.Field>
+                      <Form.Field>
+                        <label>Password (repeat):</label>
+                        <Form.Input
+                          type="password"
+                          name="passwordRepeat"
+                          required
+                          value={this.state.passwordRepeat}
+                          onChange={this.handleChange}
+                          error={passwordRepeatError}
+                        />
+                      </Form.Field>
 
-                  <Button.Group fluid>
-                    <Button type="reset" color="teal">
-                      Reset
-                    </Button>
-                    <Button type="submit">Submit</Button>
-                  </Button.Group>
-                </Form>
-                <Divider />
-                <Link to="/login">Login</Link>
+                      <Button.Group fluid>
+                        <Button type="reset" color="teal">
+                          Reset
+                        </Button>
+                        <Button type="submit">Submit</Button>
+                      </Button.Group>
+                    </Form>
+                    <Divider />
+                    <Link to="/login">Have an account? Login</Link>
+                  </Card.Content>
+                </Card>
               </Grid.Column>
             </Grid.Row>
           </Grid>

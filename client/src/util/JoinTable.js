@@ -2,6 +2,7 @@ import { toast } from "react-toastify";
 import { getAuthId } from "./Authentication";
 import { checkResponse } from "./Response";
 
+// fetches the favorite/read relations between fetched books and authenticated user
 export const getRelations = async (books, listName) => {
   let arr = [];
   for (const element of books) {
