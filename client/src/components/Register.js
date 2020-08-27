@@ -6,6 +6,7 @@ import {
   Grid,
   Divider,
   Card,
+  Header,
 } from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -75,7 +76,9 @@ class Register extends React.Component {
         .then((r) => checkResponse(r))
         .then((r) => r.json())
         .then((response) => {
-          toast.success("Registration is successful");
+          toast.success(
+            "Registration is successful.. Redirecting to login page..."
+          );
           setTimeout(() => {
             this.props.history.push("/login");
           }, 1500);
@@ -91,6 +94,9 @@ class Register extends React.Component {
 
     return (
       <div>
+        <Header textAlign="center" size="huge" className="mt-5">
+          Register To System
+        </Header>
         <Container>
           <Grid>
             <Grid.Row columns="equal" centered>

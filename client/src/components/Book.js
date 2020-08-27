@@ -1,12 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Container, Card, Placeholder, Grid, Table } from "semantic-ui-react";
-import { useHistory } from "react-router-dom";
+import {
+  Container,
+  Card,
+  Placeholder,
+  Grid,
+  Table,
+  Header,
+  Button,
+  TextArea,
+} from "semantic-ui-react";
+import { useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { checkResponse } from "../util/Response";
 
-export default function Book() {
+export default function Book(props) {
   const [book, setBook] = useState({});
+  const [description, setDescription] = useState("");
+
+  const location = useLocation();
+  const edit = location.state;
 
   const history = useHistory();
   const path = history.location.pathname;
@@ -23,16 +36,65 @@ export default function Book() {
       .then((r) => checkResponse(r))
       .then((r) => r.json())
       .then((response) => {
-        console.log(response);
         setBook(response);
+        setDescription(response.description);
       })
       .catch((e) => {
         toast.error("book detail fetch failed");
       });
   }, []);
 
+  const editButton = () => {
+    return (
+      <Button
+        onClick={() => {
+          fetch(`http://localhost:8080/api/books/${bookID}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ description }),
+            credentials: "include",
+          })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((response) => {
+              setBook(response);
+              setDescription(response.description);
+              toast.success("book update is successful");
+            })
+            .catch((e) => {
+              toast.error("book update is failed failed");
+            });
+        }}
+      >
+        Submit
+      </Button>
+    );
+  };
+
+  const editSegment = () => {
+    return (
+      <Table.Row>
+        <Table.Cell style={{ fontWeight: "600" }}>Description</Table.Cell>
+        <Table.Cell>
+          <TextArea
+            fluid
+            value={description}
+            onChange={(e, data) => {
+              setDescription(e.currentTarget.value);
+            }}
+          ></TextArea>
+        </Table.Cell>
+      </Table.Row>
+    );
+  };
+
   return (
     <Container>
+      <Header textAlign="center" size="huge" className="mt-5">
+        BOOK DETAILS
+      </Header>
       <Card fluid raised className="mt-5">
         <Card.Content textAlign="center">
           <Grid>
@@ -54,7 +116,9 @@ export default function Book() {
                     {tableRow("Name", book.name)}
                     {tableRow("Page Number", book.pageNumber)}
                     {tableRow("Type", book.type)}
-                    {tableRow("Description", book.description)}
+                    {edit
+                      ? editSegment()
+                      : tableRow("Description", book.description)}
                     {tableRow("First create date", book.createDate)}
                     {tableRow("Last update date", book.updateDate)}
                   </Table.Body>
@@ -62,6 +126,7 @@ export default function Book() {
               </Grid.Column>
             </Grid.Row>
           </Grid>
+          {edit ? editButton() : null}
         </Card.Content>
       </Card>
     </Container>

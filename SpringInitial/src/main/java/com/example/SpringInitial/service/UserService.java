@@ -83,7 +83,7 @@ public class UserService implements UserDetailsService {
 		Optional<User> byId = userRepository.findByIdAndActiveTrue(id);
 		if (byId.isPresent()) {
 			User user = byId.get();
-			user.setPassword(dto.getPassword());
+			user.setPassword(encoder.encode(dto.getPassword()));
 			return userRepository.save(user);
 		}
 		throw new IllegalArgumentException("User is not found");

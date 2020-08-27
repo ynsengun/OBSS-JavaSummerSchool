@@ -6,6 +6,7 @@ import {
   Form,
   Button,
   Card,
+  Header,
 } from "semantic-ui-react";
 import { useHistory, Link } from "react-router-dom";
 import fetch from "isomorphic-unfetch";
@@ -91,6 +92,9 @@ const Login = (props) => {
 
   return (
     <div>
+      <Header textAlign="center" size="huge" className="mt-5">
+        Login To System
+      </Header>
       <Container>
         <Grid>
           <Grid.Row columns="equal" centered>

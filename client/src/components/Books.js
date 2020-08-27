@@ -110,9 +110,10 @@ class Books extends React.Component {
 
   render() {
     const { books } = this.state;
+    console.log(this.props.type);
     return (
       <BookPaginationTable
-        type="regular"
+        type={this.props.type ? "entities" : "regular"}
         data={books}
         changePageTo={this.changePageTo}
         existInFavoriteList={this.state.existInFavoriteList}

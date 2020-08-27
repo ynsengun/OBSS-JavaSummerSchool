@@ -10,7 +10,7 @@ import {
 
 import Books from "./Books";
 
-export default function Library() {
+export default function Library(props) {
   const [search, setSearch] = useState(null);
 
   let searchValues = {
@@ -20,13 +20,16 @@ export default function Library() {
 
   return (
     <Container>
-      <Card fluid className="my-5" raised>
-        <Card.Content>
-          <Header size="huge" textAlign="center">
-            library
-          </Header>
-        </Card.Content>
-      </Card>
+      {props.exclude ? null : (
+        <Card fluid className="my-5" raised>
+          <Card.Content>
+            <Header size="huge" textAlign="center">
+              library
+            </Header>
+          </Card.Content>
+        </Card>
+      )}
+
       <Card fluid className="my-5" raised>
         <Card.Content className=" d-flex">
           <p
@@ -36,10 +39,10 @@ export default function Library() {
               fontWeight: "600",
               display: "inline-block",
               marginRight: "20px",
-              marginLeft: "100px",
+              marginLeft: props.exclude ? "35px" : "170px",
             }}
           >
-            Filter By:{" "}
+            Filter By:
           </p>
           <Dropdown
             options={[
@@ -63,7 +66,7 @@ export default function Library() {
             </Form.Field>
           </Form>
           <Button
-            style={{ height: "35px", marginTop: "6px", marginLeft: "250px" }}
+            style={{ height: "35px", marginTop: "6px", marginLeft: "100px" }}
             onClick={(e) => {
               setSearch(searchValues);
             }}
@@ -72,7 +75,7 @@ export default function Library() {
           </Button>
         </Card.Content>
       </Card>
-      <Books search={search} />
+      <Books search={search} type={props.type} />
     </Container>
   );
 }

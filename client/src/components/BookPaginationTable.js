@@ -3,6 +3,8 @@ import { useHistory } from "react-router-dom";
 import { Card, Table, Label, Menu, Icon, Button } from "semantic-ui-react";
 
 import { isAuthenticated, isUser } from "../util/Authentication";
+import { checkResponse } from "../util/Response";
+import { toast } from "react-toastify";
 
 export default function BookPaginationTable(props) {
   const {
@@ -16,10 +18,6 @@ export default function BookPaginationTable(props) {
   } = props;
 
   const history = useHistory();
-
-  // console.log("paginationnnnn data  ", data);
-  // console.log("paginationnnnn fav  ", existInFavoriteList);
-  // console.log("paginationnnnn read  ", existInReadList);
 
   const getButtons = (index, bookID) => {
     if (!isAuthenticated()) {
@@ -77,13 +75,38 @@ export default function BookPaginationTable(props) {
     );
 
     const editButton = (
-      <Button color="yellow" size="small">
+      <Button
+        color="yellow"
+        size="small"
+        onClick={() => {
+          history.push(`/library/${bookID}`, { edit: true });
+        }}
+      >
         <Icon name="edit" className="m-0" />
       </Button>
     );
 
     const deleteButton = (
-      <Button color="red" size="small">
+      <Button
+        color="red"
+        size="small"
+        onClick={() => {
+          fetch(`http://localhost:8080/api/books/${bookID}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          })
+            .then((r) => checkResponse(r))
+            .then(() => {
+              toast.success("Book delete is successful");
+            })
+            .catch((e) => {
+              toast.error("Book delete failed");
+            });
+        }}
+      >
         <Icon name="delete" className="m-0" />
       </Button>
     );
@@ -111,7 +134,7 @@ export default function BookPaginationTable(props) {
   };
 
   const getColumnNumber = () => {
-    if (isAuthenticated()) {
+    if (isAuthenticated() && (isUser() || type === "entities")) {
       if (type === "read" || type === "favorite") {
         return "8";
       }
@@ -141,7 +164,9 @@ export default function BookPaginationTable(props) {
             {type === "read" || type === "favorite" ? (
               <Table.HeaderCell>{`${type} date`}</Table.HeaderCell>
             ) : null}
-            {isAuthenticated() ? <Table.HeaderCell></Table.HeaderCell> : null}
+            {isAuthenticated() && (isUser() || type === "entities") ? (
+              <Table.HeaderCell></Table.HeaderCell>
+            ) : null}
           </Table.Row>
         </Table.Header>
 
