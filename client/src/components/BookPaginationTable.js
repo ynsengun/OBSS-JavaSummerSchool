@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Card, Table, Label, Menu, Icon, Button } from "semantic-ui-react";
 
@@ -18,6 +18,7 @@ export default function BookPaginationTable(props) {
   } = props;
 
   const history = useHistory();
+  const [deleteItem, setDeleteItem] = useState([]);
 
   const getButtons = (index, bookID) => {
     if (!isAuthenticated()) {
@@ -101,6 +102,7 @@ export default function BookPaginationTable(props) {
             .then((r) => checkResponse(r))
             .then(() => {
               toast.success("Book delete is successful");
+              setDeleteItem([...deleteItem, bookID]);
             })
             .catch((e) => {
               toast.error("Book delete failed");
@@ -143,11 +145,13 @@ export default function BookPaginationTable(props) {
     return 6;
   };
 
-  const getDateColumn = (index) => {
+  const getDateColumn = (index, isActive) => {
     if (type !== "read" && type !== "favorite") {
       return null;
     }
-    return data.content[index].date;
+    return (
+      <Table.Cell disabled={!isActive}>{data.content[index].date}</Table.Cell>
+    );
   };
 
   return (
@@ -174,16 +178,20 @@ export default function BookPaginationTable(props) {
           {data &&
             data.content &&
             data.content.map((value, index) => (
-              <Table.Row>
-                <Table.Cell>
+              <Table.Row disabled={deleteItem.includes(value.id)}>
+                <Table.Cell disabled={!value.active}>
                   <Label>{data.number * data.size + index + 1}</Label>
                 </Table.Cell>
-                <Table.Cell>{value.name}</Table.Cell>
-                <Table.Cell>{value.author}</Table.Cell>
-                <Table.Cell>{value.type}</Table.Cell>
-                <Table.Cell>{value.pageNumber}</Table.Cell>
-                <Table.Cell>{value.description}</Table.Cell>
-                {getDateColumn(index)}
+                <Table.Cell disabled={!value.active}>{value.name}</Table.Cell>
+                <Table.Cell disabled={!value.active}>{value.author}</Table.Cell>
+                <Table.Cell disabled={!value.active}>{value.type}</Table.Cell>
+                <Table.Cell disabled={!value.active}>
+                  {value.pageNumber}
+                </Table.Cell>
+                <Table.Cell disabled={!value.active}>
+                  {value.description}
+                </Table.Cell>
+                {getDateColumn(index, value.active)}
                 {getButtons(index, value.id)}
               </Table.Row>
             ))}

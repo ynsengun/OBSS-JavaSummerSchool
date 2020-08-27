@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, Container, Icon, Segment, Label } from "semantic-ui-react";
+import { Menu, Container, Icon, Segment } from "semantic-ui-react";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
