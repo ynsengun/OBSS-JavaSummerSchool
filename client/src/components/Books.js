@@ -51,7 +51,6 @@ class Books extends React.Component {
       .then((r) => checkResponse(r))
       .then((r) => r.json())
       .then((response) => {
-        // toast.success(`There are ${response.totalElements} elements in total`);
         this.setState({ books: response }, () => {
           if (isAuthenticated()) {
             this.getFavoriteRelation();
@@ -115,7 +114,13 @@ class Books extends React.Component {
     const { books } = this.state;
     return (
       <BookPaginationTable
-        type={this.props.type ? "entities" : "regular"}
+        type={
+          this.props.type
+            ? this.props.type === "home"
+              ? "home"
+              : "entities"
+            : "regular"
+        }
         data={books}
         changePageTo={this.changePageTo}
         existInFavoriteList={this.state.existInFavoriteList}

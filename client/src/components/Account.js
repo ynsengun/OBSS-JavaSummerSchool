@@ -1,5 +1,13 @@
 import React from "react";
-import { Container, Form, Button, Grid, Card, Header } from "semantic-ui-react";
+import {
+  Container,
+  Form,
+  Button,
+  Grid,
+  Card,
+  Table,
+  Placeholder,
+} from "semantic-ui-react";
 import { withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
 import fetch from "isomorphic-unfetch";
@@ -12,6 +20,7 @@ class Account extends React.Component {
     super(props);
 
     this.state = {
+      user: {},
       password: "",
       passwordRepeat: "",
       passwordError: null,
@@ -19,7 +28,7 @@ class Account extends React.Component {
     };
   }
 
-  hnadleChange = (e) => {
+  handleChange = (e) => {
     const { value, name } = e.currentTarget;
 
     this.setState({ [name]: value });
@@ -75,66 +84,103 @@ class Account extends React.Component {
     }
   };
 
+  componentDidMount = () => {
+    fetch(`http://localhost:8080/api/users/${getAuthId()}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((response) => {
+        this.setState({ user: response });
+      })
+      .catch(() => {
+        toast.error("user detail fetch failed");
+      });
+  };
+
   render() {
     const { passwordError, passwordRepeatError } = this.state;
+    const { username, createDate, updateDate } = this.state.user;
 
     return (
       <div>
-        <Header textAlign="center" size="huge" className="mt-5">
-          Account Setting
-        </Header>
         <Container>
-          <Grid>
-            <Grid.Row columns="equal" centered>
-              <Grid.Column width={8}>
-                <Card fluid className="mt-5">
-                  <Card.Content>
-                    <Form
-                      onSubmit={this.handleSubmit}
-                      onReset={(e) => {
-                        e.preventDefault();
-                        this.setState({
-                          password: "",
-                          passwordRepeat: "",
-                        });
-                      }}
-                    >
-                      <Form.Field>
-                        <label>New Password:</label>
-                        <Form.Input
-                          type="password"
-                          name="password"
-                          required
-                          value={this.state.password}
-                          onChange={this.handleChange}
-                          error={passwordError}
-                        />
-                      </Form.Field>
+          <Card fluid raised className="mt-5">
+            <Card.Content textAlign="center">
+              <Grid>
+                <Grid.Row
+                  columns="equal"
+                  centered
+                  style={{ paddingTop: "80px", paddingBottom: "80px" }}
+                >
+                  <Grid.Column width={6}>
+                    <Placeholder style={{ height: 400 }}>
+                      <Placeholder.Image />
+                    </Placeholder>
+                  </Grid.Column>
+                  <Grid.Column width={1} />
+                  <Grid.Column width={6} verticalAlign="middle">
+                    <Table basic>
+                      <Table.Body>
+                        {tableRow("User Name", username)}
+                        {tableRow("Register Date", createDate)}
+                        {tableRow("Last Password Change", updateDate)}
+                      </Table.Body>
+                    </Table>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </Card.Content>
+          </Card>
+          <Card fluid raised className="mt-5">
+            <Card.Content>
+              <Form
+                onSubmit={this.handleSubmit}
+                onReset={(e) => {
+                  e.preventDefault();
+                  this.setState({
+                    password: "",
+                    passwordRepeat: "",
+                  });
+                }}
+              >
+                <Form.Field>
+                  <label>New Password:</label>
+                  <Form.Input
+                    type="password"
+                    name="password"
+                    required
+                    value={this.state.password}
+                    onChange={this.handleChange}
+                    error={passwordError}
+                  />
+                </Form.Field>
 
-                      <Form.Field>
-                        <label>New Password (repeat):</label>
-                        <Form.Input
-                          type="password"
-                          name="passwordRepeat"
-                          required
-                          value={this.state.passwordRepeat}
-                          onChange={this.handleChange}
-                          error={passwordRepeatError}
-                        />
-                      </Form.Field>
+                <Form.Field>
+                  <label>New Password (repeat):</label>
+                  <Form.Input
+                    type="password"
+                    name="passwordRepeat"
+                    required
+                    value={this.state.passwordRepeat}
+                    onChange={this.handleChange}
+                    error={passwordRepeatError}
+                  />
+                </Form.Field>
 
-                      <Button.Group fluid>
-                        <Button type="reset" color="teal">
-                          Reset
-                        </Button>
-                        <Button type="submit">Submit</Button>
-                      </Button.Group>
-                    </Form>
-                  </Card.Content>
-                </Card>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
+                <Button.Group fluid>
+                  <Button type="reset" color="teal">
+                    Reset
+                  </Button>
+                  <Button type="submit">Submit</Button>
+                </Button.Group>
+              </Form>
+            </Card.Content>
+          </Card>
         </Container>
       </div>
     );
@@ -142,3 +188,12 @@ class Account extends React.Component {
 }
 
 export default withRouter(Account);
+
+const tableRow = (f, s) => {
+  return (
+    <Table.Row>
+      <Table.Cell style={{ fontWeight: "600" }}>{f}</Table.Cell>
+      <Table.Cell>{s}</Table.Cell>
+    </Table.Row>
+  );
+};

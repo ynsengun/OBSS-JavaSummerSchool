@@ -6,6 +6,7 @@ import { checkResponse } from "./ResponseUtil";
 // fetches the favorite/read relations between fetched books and authenticated user
 export const getRelations = async (books, listName) => {
   let arr = [];
+  let error = false;
   for (const element of books) {
     try {
       let r = await fetch(
@@ -26,8 +27,11 @@ export const getRelations = async (books, listName) => {
       let json = await rChecked.json();
       arr.push(json.exist);
     } catch (e) {
-      toast.error(`${listName} relation fetch failed`);
+      error = true;
     }
+  }
+  if (error) {
+    toast.error(`${listName} relation fetch failed`);
   }
   return arr;
 };

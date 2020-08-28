@@ -39,7 +39,7 @@ export default function Home() {
           <Header textAlign="center" size="large" className="py-4">
             Start Looking For Your Favorite Book
           </Header>
-          <Books />
+          <Books type="home" />
         </div>
       </Container>
     </div>

@@ -22,7 +22,34 @@ export function saveAuth(info) {
 }
 
 export function cleanAuth() {
+  // console.log("cleannnn");
+  localStorage.removeItem("modalActivated");
   localStorage.removeItem("authInfo");
+}
+
+export function notActivatedForThisSession() {
+  let modelActivated = localStorage.getItem("modalActivated");
+  if (!modelActivated) {
+    localStorage.setItem("modalActivated", true);
+    return true;
+  }
+  return false;
+}
+
+export function expireAuth() {
+  // console.log("expireee");
+  localStorage.removeItem("modalActivated");
+  localStorage.setItem("authExpired", true);
+  cleanAuth();
+}
+
+export function isExpired() {
+  let exp = localStorage.getItem("authExpired");
+  if (exp) {
+    localStorage.removeItem("authExpired");
+    return true;
+  }
+  return false;
 }
 
 export function isAuthenticated() {

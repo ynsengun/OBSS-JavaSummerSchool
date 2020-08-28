@@ -9,6 +9,7 @@ import {
   isUser,
   isAdmin,
   getAuthName,
+  isExpired,
 } from "../util/AuthenticationUtil";
 
 function Navbar() {
@@ -20,8 +21,14 @@ function Navbar() {
 
   useEffect(() => {
     const unListen = history.listen(() => {
+      window.scrollTo(0, 0);
       setAuth(isAuthenticated());
     });
+    setInterval(() => {
+      if (isExpired()) {
+        history.push("/login");
+      }
+    }, 1000);
     return () => {
       unListen();
     };
