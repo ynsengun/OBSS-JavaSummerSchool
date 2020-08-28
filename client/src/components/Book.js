@@ -112,8 +112,8 @@ export default function Book(props) {
               <Grid.Column width={6} verticalAlign="middle">
                 <Table basic>
                   <Table.Body>
-                    {tableRow("Author", book.author)}
                     {tableRow("Name", book.name)}
+                    {tableRow("Author", book.author)}
                     {tableRow("Page Number", book.pageNumber)}
                     {tableRow("Type", book.type)}
                     {edit

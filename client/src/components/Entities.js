@@ -11,11 +11,14 @@ import {
 import Library from "./Library";
 import { toast } from "react-toastify";
 
+import UserPaginationTable from "./UserPaginationTable";
+
 import { isNumber } from "../util/Math";
 import { checkResponse } from "../util/Response";
 
 export default function Entities() {
   const [activeItem, setActiveItem] = useState("books");
+
   const [newBook, setNewBook] = useState({
     name: "",
     author: "",
@@ -24,16 +27,12 @@ export default function Entities() {
     description: "",
   });
 
-  const handleChange = (e) => {
-    const { value, name } = e.currentTarget;
+  const [newUser, setNewUser] = useState({
+    username: "",
+    password: "",
+  });
 
-    setNewBook({
-      ...newBook,
-      [name]: value,
-    });
-  };
-
-  const formField = (bookName, bookValue) => {
+  const bookFormField = (bookName, bookValue) => {
     return (
       <Form.Field>
         <label>{bookName}:</label>
@@ -42,7 +41,14 @@ export default function Entities() {
           name={bookName}
           required
           value={bookValue}
-          onChange={handleChange}
+          onChange={(e) => {
+            const { value, name } = e.currentTarget;
+
+            setNewBook({
+              ...newBook,
+              [name]: value,
+            });
+          }}
         />
       </Form.Field>
     );
@@ -96,11 +102,11 @@ export default function Entities() {
                 });
               }}
             >
-              {formField("name", newBook.name)}
-              {formField("author", newBook.author)}
-              {formField("type", newBook.type)}
-              {formField("pageNumber", newBook.pageNumber)}
-              {formField("description", newBook.description)}
+              {bookFormField("name", newBook.name)}
+              {bookFormField("author", newBook.author)}
+              {bookFormField("type", newBook.type)}
+              {bookFormField("pageNumber", newBook.pageNumber)}
+              {bookFormField("description", newBook.description)}
 
               <Button.Group fluid>
                 <Button type="reset" color="teal">
@@ -112,6 +118,90 @@ export default function Entities() {
           </Card.Content>
         </Card>
         <Library exclude={true} type="entities" />
+      </React.Fragment>
+    );
+  };
+
+  const userFormField = (userName, userValue) => {
+    return (
+      <Form.Field>
+        <label>{userName}:</label>
+        <Form.Input
+          type="text"
+          name={userName}
+          required
+          value={userValue}
+          onChange={(e) => {
+            const { value, name } = e.currentTarget;
+
+            setNewUser({
+              ...newUser,
+              [name]: value,
+            });
+          }}
+        />
+      </Form.Field>
+    );
+  };
+
+  const userEntities = () => {
+    return (
+      <React.Fragment>
+        <Card fluid raised>
+          <Card.Content>
+            <Form
+              onSubmit={() => {
+                console.log(newUser);
+                if (
+                  newUser.username.length < 4 ||
+                  newUser.password.length < 4
+                ) {
+                  toast.error(
+                    "Username and password should be bigger than 3 characters"
+                  );
+                } else {
+                  fetch(`http://localhost:8080/api/users`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(newUser),
+                  })
+                    .then((r) => checkResponse(r))
+                    .then((r) => r.json())
+                    .then((response) => {
+                      toast.success("user save is successful");
+                      setNewUser({
+                        username: "",
+                        password: "",
+                      });
+                    })
+                    .catch((e) => {
+                      toast.error("User save is failed");
+                    });
+                }
+              }}
+              onReset={(e) => {
+                e.preventDefault();
+                setNewUser({
+                  username: "",
+                  password: "",
+                });
+              }}
+            >
+              {userFormField("username", newUser.username)}
+              {userFormField("password", newUser.password)}
+
+              <Button.Group fluid>
+                <Button type="reset" color="teal">
+                  Reset
+                </Button>
+                <Button type="submit">Submit</Button>
+              </Button.Group>
+            </Form>
+          </Card.Content>
+        </Card>
+        <UserPaginationTable />
       </React.Fragment>
     );
   };
@@ -142,7 +232,7 @@ export default function Entities() {
 
             <Grid.Column stretched width={13}>
               <Segment>
-                {activeItem === "books" ? bookEntities() : "users"}
+                {activeItem === "books" ? bookEntities() : userEntities()}
               </Segment>
             </Grid.Column>
           </Grid>

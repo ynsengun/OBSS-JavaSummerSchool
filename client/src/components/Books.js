@@ -110,7 +110,6 @@ class Books extends React.Component {
 
   render() {
     const { books } = this.state;
-    console.log(this.props.type);
     return (
       <BookPaginationTable
         type={this.props.type ? "entities" : "regular"}
