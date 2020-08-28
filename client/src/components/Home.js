@@ -53,6 +53,7 @@ const PlaceholderCard = (props) => {
         <Placeholder fluid className="mb-3">
           <Placeholder.Image rectangular />
         </Placeholder>
+        {/* eslint-disable-next-line react/prop-types */}
         <Card.Header>{props.title}</Card.Header>
         <Card.Description>
           <Placeholder>

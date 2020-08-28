@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import {
   Container,
@@ -59,7 +60,7 @@ export default function Library(props) {
           </Form>
           <Button
             style={{ height: "35px", marginTop: "6px", marginLeft: "100px" }}
-            onClick={(e) => {
+            onClick={() => {
               let searchDropdown = document.getElementById(
                 "bookSearchDropdown"
               );

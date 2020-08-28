@@ -11,10 +11,9 @@ import {
   Icon,
 } from "semantic-ui-react";
 import { toast } from "react-toastify";
-
 import { checkResponse } from "../util/ResponseUtil";
 
-export default function UserPaginationTable(props) {
+export default function UserPaginationTable() {
   const [search, setSearch] = useState(null);
   const [users, setUsers] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
@@ -50,10 +49,9 @@ export default function UserPaginationTable(props) {
       .then((r) => checkResponse(r))
       .then((r) => r.json())
       .then((response) => {
-        // console.log(response);
         setUsers(response);
       })
-      .catch((e) => {
+      .catch(() => {
         toast.error("user fetch failed");
       });
   };
@@ -94,7 +92,7 @@ export default function UserPaginationTable(props) {
                 toast.success("User delete is successful");
                 setDeleteItem([...deleteItem, userID]);
               })
-              .catch((e) => {
+              .catch(() => {
                 toast.error("User delete failed");
               });
           }}
@@ -119,7 +117,7 @@ export default function UserPaginationTable(props) {
           </Form>
           <Button
             style={{ height: "35px", marginTop: "6px", marginLeft: "100px" }}
-            onClick={(e) => {
+            onClick={() => {
               let searchInput = document.getElementById("userSearchInput");
               let searchVal = searchInput.value;
               setCurrentPage(0);
@@ -145,7 +143,10 @@ export default function UserPaginationTable(props) {
             {users &&
               users.content &&
               users.content.map((value, index) => (
-                <Table.Row disabled={deleteItem.includes(value.id)}>
+                <Table.Row
+                  key={value.id}
+                  disabled={deleteItem.includes(value.id)}
+                >
                   <Table.Cell>
                     <Label>{users.number * users.size + index + 1}</Label>
                   </Table.Cell>
@@ -171,6 +172,7 @@ export default function UserPaginationTable(props) {
                   </Menu.Item>
                   {[...Array(users.totalPages).keys()].map((value, index) => (
                     <Menu.Item
+                      key={index}
                       as="a"
                       active={users.number === index}
                       onClick={() => {

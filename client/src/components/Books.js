@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import fetch from "isomorphic-unfetch";
 import { toast } from "react-toastify";
@@ -58,7 +59,7 @@ class Books extends React.Component {
           }
         });
       })
-      .catch((e) => {
+      .catch(() => {
         toast.error("book fetch failed");
       });
   };
@@ -103,8 +104,8 @@ class Books extends React.Component {
     this.getBooks();
   };
 
+  // eslint-disable-next-line react/no-deprecated
   componentWillReceiveProps = (nextProps) => {
-    // console.log("next props ", nextProps.search);
     this.setState({ currentPage: 0 }, () => {
       this.getBooks(nextProps.search);
     });

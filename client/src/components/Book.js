@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 
 import { checkResponse } from "../util/ResponseUtil";
 
-export default function Book(props) {
+export default function Book() {
   const [book, setBook] = useState({});
   const [description, setDescription] = useState("");
 
@@ -39,7 +39,7 @@ export default function Book(props) {
         setBook(response);
         setDescription(response.description);
       })
-      .catch((e) => {
+      .catch(() => {
         toast.error("book detail fetch failed");
       });
   }, []);
@@ -63,7 +63,7 @@ export default function Book(props) {
               setDescription(response.description);
               toast.success("book update is successful");
             })
-            .catch((e) => {
+            .catch(() => {
               toast.error("book update is failed failed");
             });
         }}
@@ -81,7 +81,7 @@ export default function Book(props) {
           <TextArea
             fluid
             value={description}
-            onChange={(e, data) => {
+            onChange={(e) => {
               setDescription(e.currentTarget.value);
             }}
           ></TextArea>

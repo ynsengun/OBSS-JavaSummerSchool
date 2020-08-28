@@ -76,15 +76,16 @@ class Register extends React.Component {
       })
         .then((r) => checkResponse(r))
         .then((r) => r.json())
-        .then((response) => {
+        .then(() => {
           toast.success(
             "Registration is successful.. Redirecting to login page..."
           );
           setTimeout(() => {
+            // eslint-disable-next-line react/prop-types
             this.props.history.push("/login");
           }, 1500);
         })
-        .catch((e) => {
+        .catch(() => {
           toast.error("This username is already exist");
         });
     }

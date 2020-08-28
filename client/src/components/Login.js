@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 import { saveAuth } from "../util/AuthenticationUtil";
 import { checkResponse } from "../util/ResponseUtil";
 
-const Login = (props) => {
+const Login = () => {
   const history = useHistory();
 
   const [usernamePassword, setUsernamePassword] = useState({
@@ -85,7 +85,7 @@ const Login = (props) => {
             }, 1500);
           })
       )
-      .catch((e) => {
+      .catch(() => {
         toast.error("Error on login");
       });
   };
@@ -140,7 +140,7 @@ const Login = (props) => {
                     </Button.Group>
                   </Form>
                   <Divider />
-                  <Link to="/register">Don't have an account? Register</Link>
+                  <Link to="/register">Do not have an account? Register</Link>
                 </Card.Content>
               </Card>
             </Grid.Column>

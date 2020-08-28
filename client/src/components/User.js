@@ -9,7 +9,7 @@ import {
   Button,
   TextArea,
 } from "semantic-ui-react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { checkResponse } from "../util/ResponseUtil";
@@ -36,7 +36,7 @@ export default function Book() {
         setUser(response);
         setPassword(response.password);
       })
-      .catch((e) => {
+      .catch(() => {
         toast.error("user detail fetch failed");
       });
   }, []);
@@ -60,7 +60,7 @@ export default function Book() {
               setPassword(response.password);
               toast.success("user update is successful");
             })
-            .catch((e) => {
+            .catch(() => {
               toast.error("user update is failed failed");
             });
         }}
@@ -78,7 +78,7 @@ export default function Book() {
           <TextArea
             fluid
             value={password}
-            onChange={(e, data) => {
+            onChange={(e) => {
               setPassword(e.currentTarget.value);
             }}
           ></TextArea>

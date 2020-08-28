@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Card, Table, Label, Menu, Icon, Button } from "semantic-ui-react";
@@ -105,7 +106,7 @@ export default function BookPaginationTable(props) {
               toast.success("Book delete is successful");
               setDeleteItem([...deleteItem, bookID]);
             })
-            .catch((e) => {
+            .catch(() => {
               toast.error("Book delete failed");
             });
         }}
@@ -179,7 +180,10 @@ export default function BookPaginationTable(props) {
           {data &&
             data.content &&
             data.content.map((value, index) => (
-              <Table.Row disabled={deleteItem.includes(value.id)}>
+              <Table.Row
+                disabled={deleteItem.includes(value.id)}
+                key={value.id}
+              >
                 <Table.Cell disabled={!value.active}>
                   <Label>{data.number * data.size + index + 1}</Label>
                 </Table.Cell>
@@ -214,6 +218,7 @@ export default function BookPaginationTable(props) {
                 </Menu.Item>
                 {[...Array(data.totalPages).keys()].map((value, index) => (
                   <Menu.Item
+                    key={index}
                     as="a"
                     active={data.number === index}
                     onClick={() => {

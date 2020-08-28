@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, Container, Icon, Segment, Sticky } from "semantic-ui-react";
+import { Menu, Container, Icon, Segment } from "semantic-ui-react";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -13,6 +13,7 @@ import {
 
 function Navbar() {
   const [activeItem, setActiveItem] = useState("home");
+  // eslint-disable-next-line no-unused-vars
   const [auth, setAuth] = useState(isAuthenticated());
 
   const history = useHistory();
@@ -55,7 +56,7 @@ function Navbar() {
           return Promise.reject(new Error("An error occured"));
         }
       })
-      .catch((e) => {
+      .catch(() => {
         toast.error("Logout is failed");
       });
   };

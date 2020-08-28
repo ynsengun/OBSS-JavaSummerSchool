@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import fetch from "isomorphic-unfetch";
 import { toast } from "react-toastify";
@@ -42,7 +43,7 @@ export default function SpecialList(props) {
         response.content = newBooks;
         setBooks(response);
       })
-      .catch((e) => {
+      .catch(() => {
         toast.error(`${type} book fetch failed`);
       });
   };

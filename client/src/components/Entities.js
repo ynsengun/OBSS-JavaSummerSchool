@@ -74,7 +74,7 @@ export default function Entities() {
                   })
                     .then((r) => checkResponse(r))
                     .then((r) => r.json())
-                    .then((response) => {
+                    .then(() => {
                       toast.success("book save is successful");
                       setNewBook({
                         name: "",
@@ -84,7 +84,7 @@ export default function Entities() {
                         description: "",
                       });
                     })
-                    .catch((e) => {
+                    .catch(() => {
                       toast.error("book save is failed");
                     });
                 }
@@ -167,14 +167,14 @@ export default function Entities() {
                   })
                     .then((r) => checkResponse(r))
                     .then((r) => r.json())
-                    .then((response) => {
+                    .then(() => {
                       toast.success("user save is successful");
                       setNewUser({
                         username: "",
                         password: "",
                       });
                     })
-                    .catch((e) => {
+                    .catch(() => {
                       toast.error("User save is failed");
                     });
                 }

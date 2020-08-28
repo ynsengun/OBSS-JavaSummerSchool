@@ -19,7 +19,7 @@ class Account extends React.Component {
     };
   }
 
-  handleChange = (e) => {
+  hnadleChange = (e) => {
     const { value, name } = e.currentTarget;
 
     this.setState({ [name]: value });
@@ -60,15 +60,16 @@ class Account extends React.Component {
       })
         .then((r) => checkResponse(r))
         .then((r) => r.json())
-        .then((response) => {
+        .then(() => {
           toast.success(
             "Password is changed successfully.. Redirecting to home page..."
           );
           setTimeout(() => {
+            // eslint-disable-next-line react/prop-types
             this.props.history.push("/");
           }, 1500);
         })
-        .catch((e) => {
+        .catch(() => {
           toast.error("Error on password change");
         });
     }
