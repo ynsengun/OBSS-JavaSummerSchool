@@ -10,9 +10,9 @@ import {
   Menu,
   Icon,
 } from "semantic-ui-react";
-
 import { toast } from "react-toastify";
-import { checkResponse } from "../util/Response";
+
+import { checkResponse } from "../util/ResponseUtil";
 
 export default function UserPaginationTable(props) {
   const [search, setSearch] = useState(null);
@@ -20,8 +20,6 @@ export default function UserPaginationTable(props) {
   const [currentPage, setCurrentPage] = useState(0);
   const history = useHistory();
   const [deleteItem, setDeleteItem] = useState([]);
-
-  let searchValue = "";
 
   const getUsers = () => {
     let value = "";
@@ -62,7 +60,7 @@ export default function UserPaginationTable(props) {
 
   useEffect(() => {
     getUsers();
-  }, [currentPage]);
+  }, [currentPage, search]);
 
   const changePageTo = (i) => {
     setCurrentPage(i);
@@ -114,17 +112,18 @@ export default function UserPaginationTable(props) {
           <Form className="pl-4 pt-1" style={{ marginLeft: "160px" }}>
             <Form.Field>
               <input
+                id="userSearchInput"
                 placeholder="Search For Username..."
-                onChange={(e) => {
-                  searchValue = e.target.value;
-                }}
               />
             </Form.Field>
           </Form>
           <Button
             style={{ height: "35px", marginTop: "6px", marginLeft: "100px" }}
             onClick={(e) => {
-              setSearch(searchValue);
+              let searchInput = document.getElementById("userSearchInput");
+              let searchVal = searchInput.value;
+              setCurrentPage(0);
+              setSearch(searchVal);
             }}
           >
             Search

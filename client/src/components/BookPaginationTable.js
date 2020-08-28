@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Card, Table, Label, Menu, Icon, Button } from "semantic-ui-react";
-
-import { isAuthenticated, isUser } from "../util/Authentication";
-import { checkResponse } from "../util/Response";
 import { toast } from "react-toastify";
+
+import { isAuthenticated, isUser } from "../util/AuthenticationUtil";
+import { checkResponse } from "../util/ResponseUtil";
+import { truncateWithDots } from "../util/StringUtil";
 
 export default function BookPaginationTable(props) {
   const {
@@ -189,7 +190,7 @@ export default function BookPaginationTable(props) {
                   {value.pageNumber}
                 </Table.Cell>
                 <Table.Cell disabled={!value.active}>
-                  {value.description}
+                  {truncateWithDots(value.description)}
                 </Table.Cell>
                 {getDateColumn(index, value.active)}
                 {getButtons(index, value.id)}

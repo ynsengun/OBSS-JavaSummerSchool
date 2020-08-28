@@ -3,8 +3,9 @@ import { Container, Form, Button, Grid, Card, Header } from "semantic-ui-react";
 import { withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
 import fetch from "isomorphic-unfetch";
-import { checkResponse } from "../util/Response";
-import { getAuthId } from "../util/Authentication";
+
+import { checkResponse } from "../util/ResponseUtil";
+import { getAuthId } from "../util/AuthenticationUtil";
 
 class Account extends React.Component {
   constructor(props) {

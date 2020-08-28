@@ -3,9 +3,9 @@ import fetch from "isomorphic-unfetch";
 import { toast } from "react-toastify";
 import BookPaginationTable from "./BookPaginationTable";
 
-import { isAuthenticated } from "../util/Authentication";
-import { checkResponse } from "../util/Response";
-import { handleRelationOperations, getRelations } from "../util/JoinTable";
+import { isAuthenticated } from "../util/AuthenticationUtil";
+import { checkResponse } from "../util/ResponseUtil";
+import { handleRelationOperations, getRelations } from "../util/JoinTableUtil";
 
 class Books extends React.Component {
   constructor(props) {
@@ -105,7 +105,9 @@ class Books extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
     // console.log("next props ", nextProps.search);
-    this.getBooks(nextProps.search);
+    this.setState({ currentPage: 0 }, () => {
+      this.getBooks(nextProps.search);
+    });
   };
 
   render() {

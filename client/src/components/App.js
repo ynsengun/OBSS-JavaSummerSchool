@@ -22,6 +22,7 @@ export default function App() {
     <Router>
       <div className="app">
         <Navbar />
+        <div style={{ height: "72px" }} />
 
         {/* prettier-ignore */}
         <Switch>

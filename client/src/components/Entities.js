@@ -8,13 +8,13 @@ import {
   Form,
   Button,
 } from "semantic-ui-react";
-import Library from "./Library";
 import { toast } from "react-toastify";
 
+import Library from "./Library";
 import UserPaginationTable from "./UserPaginationTable";
 
-import { isNumber } from "../util/Math";
-import { checkResponse } from "../util/Response";
+import { isPositiveInteger } from "../util/MathUtil";
+import { checkResponse } from "../util/ResponseUtil";
 
 export default function Entities() {
   const [activeItem, setActiveItem] = useState("books");
@@ -61,10 +61,8 @@ export default function Entities() {
           <Card.Content>
             <Form
               onSubmit={() => {
-                if (!isNumber(newBook.pageNumber) || newBook.pageNumber < 1) {
-                  toast.error(
-                    "Page number should be a number and bigger than 1"
-                  );
+                if (!isPositiveInteger(newBook.pageNumber)) {
+                  toast.error("Page number should be an integer bigger than 1");
                 } else {
                   fetch(`http://localhost:8080/api/books/`, {
                     method: "POST",
@@ -122,12 +120,12 @@ export default function Entities() {
     );
   };
 
-  const userFormField = (userName, userValue) => {
+  const userFormField = (userName, userValue, type) => {
     return (
       <Form.Field>
         <label>{userName}:</label>
         <Form.Input
-          type="text"
+          type={type}
           name={userName}
           required
           value={userValue}
@@ -189,8 +187,8 @@ export default function Entities() {
                 });
               }}
             >
-              {userFormField("username", newUser.username)}
-              {userFormField("password", newUser.password)}
+              {userFormField("username", newUser.username, "email")}
+              {userFormField("password", newUser.password, "password")}
 
               <Button.Group fluid>
                 <Button type="reset" color="teal">

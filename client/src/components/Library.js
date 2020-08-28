@@ -13,11 +13,6 @@ import Books from "./Books";
 export default function Library(props) {
   const [search, setSearch] = useState(null);
 
-  let searchValues = {
-    type: "name",
-    value: "",
-  };
-
   return (
     <Container>
       {props.exclude ? null : (
@@ -52,23 +47,26 @@ export default function Library(props) {
             ]}
             selection
             onChange={(e, data) => {
-              searchValues.type = data.value;
+              let searchInput = document.getElementById("bookSearchDropdown");
+              searchInput.value = data.value;
             }}
           />
+          <input id="bookSearchDropdown" style={{ display: "none" }}></input>
           <Form className="pl-4 pt-1">
             <Form.Field>
-              <input
-                placeholder="Search For..."
-                onChange={(e) => {
-                  searchValues.value = e.target.value;
-                }}
-              />
+              <input id="bookSearchInput" placeholder="Search For..." />
             </Form.Field>
           </Form>
           <Button
             style={{ height: "35px", marginTop: "6px", marginLeft: "100px" }}
             onClick={(e) => {
-              setSearch(searchValues);
+              let searchDropdown = document.getElementById(
+                "bookSearchDropdown"
+              );
+              let dropVal = searchDropdown.value;
+              let searchInput = document.getElementById("bookSearchInput");
+              let inputVal = searchInput.value;
+              setSearch({ type: dropVal, value: inputVal });
             }}
           >
             Search

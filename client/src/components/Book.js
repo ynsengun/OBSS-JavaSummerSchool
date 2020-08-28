@@ -12,7 +12,7 @@ import {
 import { useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { checkResponse } from "../util/Response";
+import { checkResponse } from "../util/ResponseUtil";
 
 export default function Book(props) {
   const [book, setBook] = useState({});

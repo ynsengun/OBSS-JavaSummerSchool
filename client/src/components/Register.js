@@ -11,7 +11,8 @@ import {
 import { Link, withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
 import fetch from "isomorphic-unfetch";
-import { checkResponse } from "../util/Response";
+
+import { checkResponse } from "../util/ResponseUtil";
 
 class Register extends React.Component {
   constructor(props) {

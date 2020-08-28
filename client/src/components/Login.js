@@ -12,8 +12,8 @@ import { useHistory, Link } from "react-router-dom";
 import fetch from "isomorphic-unfetch";
 import { toast } from "react-toastify";
 
-import { saveAuth } from "../util/Authentication";
-import { checkResponse } from "../util/Response";
+import { saveAuth } from "../util/AuthenticationUtil";
+import { checkResponse } from "../util/ResponseUtil";
 
 const Login = (props) => {
   const history = useHistory();
@@ -86,7 +86,7 @@ const Login = (props) => {
           })
       )
       .catch((e) => {
-        toast.error(e.message);
+        toast.error("Error on login");
       });
   };
 

@@ -1,6 +1,6 @@
 import React from "react";
-
 import { Container, Card, Header, Icon, Placeholder } from "semantic-ui-react";
+
 import Books from "./Books";
 
 export default function Home() {

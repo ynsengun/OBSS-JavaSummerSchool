@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import fetch from "isomorphic-unfetch";
 import { toast } from "react-toastify";
-import PaginationTable from "./BookPaginationTable";
-
-import { checkResponse } from "../util/Response";
-import { isAuthenticated, getAuthId } from "../util/Authentication";
 import { Container, Header, Card } from "semantic-ui-react";
 
-import { handleRelationOperations } from "../util/JoinTable";
+import PaginationTable from "./BookPaginationTable";
+
+import { checkResponse } from "../util/ResponseUtil";
+import { isAuthenticated, getAuthId } from "../util/AuthenticationUtil";
+import { handleRelationOperations } from "../util/JoinTableUtil";
 
 export default function SpecialList(props) {
   const [type, setType] = useState(props.type); // todo
