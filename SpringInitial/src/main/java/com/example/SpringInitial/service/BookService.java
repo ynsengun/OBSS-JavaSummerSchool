@@ -24,6 +24,11 @@ public class BookService {
 		return bookRepository.findByActiveTrue(paged);
 	}
 	
+	public Page<Book> findAllInActive(int pageSize, int pageNumber){
+		Pageable paged = PageRequest.of(pageNumber, pageSize);
+		return bookRepository.findByActiveFalse(paged);
+	}
+	
 	public Optional<Book> findByIdActive(long id) {
 		return bookRepository.findByIdAndActiveTrue(id);
 	}

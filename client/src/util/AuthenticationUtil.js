@@ -1,4 +1,5 @@
 export function saveAuth(info) {
+  localStorage.removeItem("animPlayed");
   const { id, username } = info;
 
   let isUser = false,
@@ -22,7 +23,6 @@ export function saveAuth(info) {
 }
 
 export function cleanAuth() {
-  // console.log("cleannnn");
   localStorage.removeItem("modalActivated");
   localStorage.removeItem("authInfo");
 }
@@ -37,7 +37,6 @@ export function notActivatedForThisSession() {
 }
 
 export function expireAuth() {
-  // console.log("expireee");
   localStorage.removeItem("modalActivated");
   localStorage.setItem("authExpired", true);
   cleanAuth();

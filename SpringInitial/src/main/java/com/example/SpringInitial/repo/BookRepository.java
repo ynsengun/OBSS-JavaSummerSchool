@@ -21,4 +21,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 	Optional<Book> findByIdAndActiveTrue(Long id);
 	
 	Page<Book> findByActiveTrue(Pageable pageable);
+	
+	Page<Book> findByActiveFalse(Pageable pageable);
 }

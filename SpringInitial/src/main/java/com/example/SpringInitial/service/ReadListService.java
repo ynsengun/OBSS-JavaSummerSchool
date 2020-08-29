@@ -53,7 +53,7 @@ public class ReadListService {
 		Optional<User> userById = userRepository.findByIdAndActiveTrue(dto.getUserID());
 
 		if (userById.isPresent()) {
-			Optional<Book> bookById = bookRepository.findByIdAndActiveTrue(dto.getBookID());
+			Optional<Book> bookById = bookRepository.findById(dto.getBookID());
 
 			if (bookById.isPresent()) {
 				Optional<UserBookRead> byId = findExistence(dto);

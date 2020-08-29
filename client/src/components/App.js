@@ -9,7 +9,6 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import NotFound from "./NotFound";
 import Book from "./Book";
-import Discover from "./Discover";
 import Entities from "./Entities";
 import Account from "./Account";
 import User from "./User";
@@ -31,7 +30,6 @@ export default function App() {
           <Route exact path="/library/:id"><Book /></Route>
           <Route exact path="/read-list"><SpecialList type="read" /></Route>
           <Route exact path="/favorite-list"><SpecialList type="favorite" /></Route>
-          <Route exact path="/discover"><Discover /></Route>
           <Route exact path="/entities"><Entities /></Route>
           <Route exact path="/users/:id"><User /></Route>
           <Route exact path="/account"><Account /></Route>

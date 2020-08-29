@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Card, Table, Label, Menu, Icon, Button } from "semantic-ui-react";
 import { toast } from "react-toastify";
+import Confetti from "react-dom-confetti";
 
 import {
   isAuthenticated,
@@ -23,9 +24,25 @@ export default function BookPaginationTable(props) {
     handleRead,
   } = props;
 
+  const config = {
+    angle: 90,
+    spread: 360,
+    startVelocity: 20,
+    elementCount: "100",
+    dragFriction: "0.22",
+    duration: "2500",
+    stagger: 3,
+    width: "10px",
+    height: "10px",
+    perspective: "500px",
+    colors: ["#f00", "#0f0", "#00f"],
+  };
+
   const history = useHistory();
   const [deleteItem, setDeleteItem] = useState([]);
   const [modal, setModal] = useState("d-none");
+  const [favConfetti, setFavConfetti] = useState([]);
+  const [readConfetti, setReadConfetti] = useState([]);
 
   const getButtons = (index, bookID) => {
     if (!isAuthenticated() || type === "home") {
@@ -64,9 +81,19 @@ export default function BookPaginationTable(props) {
         size="small"
         onClick={() => {
           handleFavorite(index, bookID);
+          if (getFavoriteColor() === "green" && type === "regular") {
+            let tmpConf = [...favConfetti];
+            tmpConf[index] = true;
+            setFavConfetti(tmpConf);
+          } else {
+            let tmpConf = [...favConfetti];
+            tmpConf[index] = false;
+            setFavConfetti(tmpConf);
+          }
         }}
       >
         <Icon name="heart" className="m-0" />
+        <Confetti active={favConfetti[index]} config={config} />
       </Button>
     );
 
@@ -76,9 +103,19 @@ export default function BookPaginationTable(props) {
         size="small"
         onClick={() => {
           handleRead(index, bookID);
+          if (getReadColor() === "green" && type === "regular") {
+            let tmpConf = [...readConfetti];
+            tmpConf[index] = true;
+            setReadConfetti(tmpConf);
+          } else {
+            let tmpConf = [...readConfetti];
+            tmpConf[index] = false;
+            setReadConfetti(tmpConf);
+          }
         }}
       >
         <Icon name="book" className="m-0" />
+        <Confetti active={readConfetti[index]} config={config} />
       </Button>
     );
 
@@ -120,6 +157,32 @@ export default function BookPaginationTable(props) {
       </Button>
     );
 
+    const recoverButton = (
+      <Button
+        color="green"
+        size="small"
+        onClick={() => {
+          fetch(`http://localhost:8080/api/books/${bookID}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          })
+            .then((r) => checkResponse(r))
+            .then(() => {
+              toast.success("Book recover is successful");
+              setDeleteItem([...deleteItem, bookID]);
+            })
+            .catch(() => {
+              toast.error("Book recover failed");
+            });
+        }}
+      >
+        <Icon name="redo" className="m-0" />
+      </Button>
+    );
+
     if (type === "read") {
       return <Table.Cell collapsing>{readButton}</Table.Cell>;
     } else if (type === "favorite") {
@@ -139,6 +202,8 @@ export default function BookPaginationTable(props) {
           {deleteButton}
         </Table.Cell>
       );
+    } else if (type === "deleted") {
+      return <Table.Cell collapsing>{recoverButton}</Table.Cell>;
     }
   };
 
@@ -225,8 +290,10 @@ export default function BookPaginationTable(props) {
   useEffect(() => {
     setModal("d-none");
     if (data && data.content) {
+      setFavConfetti(data.content.map(() => false));
+      setReadConfetti(data.content.map(() => false));
       let isInActive = data.content.find((book) => !book.active);
-      if (isInActive && notActivatedForThisSession()) {
+      if (isInActive && type !== "deleted" && notActivatedForThisSession()) {
         setModal("d-block");
       }
     }
@@ -263,18 +330,22 @@ export default function BookPaginationTable(props) {
                   disabled={deleteItem.includes(value.id)}
                   key={value.id}
                 >
-                  <Table.Cell disabled={!value.active}>
+                  <Table.Cell disabled={!value.active && type !== "deleted"}>
                     <Label>{data.number * data.size + index + 1}</Label>
                   </Table.Cell>
-                  <Table.Cell disabled={!value.active}>{value.name}</Table.Cell>
-                  <Table.Cell disabled={!value.active}>
+                  <Table.Cell disabled={!value.active && type !== "deleted"}>
+                    {value.name}
+                  </Table.Cell>
+                  <Table.Cell disabled={!value.active && type !== "deleted"}>
                     {value.author}
                   </Table.Cell>
-                  <Table.Cell disabled={!value.active}>{value.type}</Table.Cell>
-                  <Table.Cell disabled={!value.active}>
+                  <Table.Cell disabled={!value.active && type !== "deleted"}>
+                    {value.type}
+                  </Table.Cell>
+                  <Table.Cell disabled={!value.active && type !== "deleted"}>
                     {value.pageNumber}
                   </Table.Cell>
-                  <Table.Cell disabled={!value.active}>
+                  <Table.Cell disabled={!value.active && type !== "deleted"}>
                     {truncateWithDots(value.description)}
                   </Table.Cell>
                   {getDateColumn(index, value.active)}

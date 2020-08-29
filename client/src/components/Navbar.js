@@ -20,15 +20,36 @@ function Navbar() {
   const history = useHistory();
 
   useEffect(() => {
+    // when the page first loaded, this arranges the navbar active
+    if (window.performance && performance.navigation.type == 1) {
+      let active = history.location.pathname.substring(1).replace("-", " ");
+      if (active == "") {
+        active = "home";
+      }
+      setActiveItem(active);
+      if (active === "home") {
+        localStorage.removeItem("animPlayed");
+      }
+    }
+
     const unListen = history.listen(() => {
+      // aranges the navbar active when url is changed
+      let active = history.location.pathname.substring(1).replace("-", " ");
+      if (active == "") {
+        active = "home";
+      }
+      setActiveItem(active);
+
       window.scrollTo(0, 0);
       setAuth(isAuthenticated());
     });
+
     setInterval(() => {
       if (isExpired()) {
         history.push("/login");
       }
     }, 1000);
+
     return () => {
       unListen();
     };
@@ -40,7 +61,6 @@ function Navbar() {
     } else {
       history.push(`/${name.replace(" ", "-")}`);
     }
-    setActiveItem(name);
   };
 
   const handleLogout = () => {
@@ -95,11 +115,6 @@ function Navbar() {
                 <Menu.Item
                   name="favorite list"
                   active={activeItem === "favorite list"}
-                  onClick={handleItemClick}
-                />
-                <Menu.Item
-                  name="discover"
-                  active={activeItem === "discover"}
                   onClick={handleItemClick}
                 />
               </React.Fragment>

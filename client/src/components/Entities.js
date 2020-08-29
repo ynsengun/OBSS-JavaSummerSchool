@@ -10,6 +10,7 @@ import {
 } from "semantic-ui-react";
 import { toast } from "react-toastify";
 
+import Books from "./Books";
 import Library from "./Library";
 import UserPaginationTable from "./UserPaginationTable";
 
@@ -32,29 +33,29 @@ export default function Entities() {
     password: "",
   });
 
-  const bookFormField = (bookName, bookValue) => {
-    return (
-      <Form.Field>
-        <label>{bookName}:</label>
-        <Form.Input
-          type="text"
-          name={bookName}
-          required
-          value={bookValue}
-          onChange={(e) => {
-            const { value, name } = e.currentTarget;
-
-            setNewBook({
-              ...newBook,
-              [name]: value,
-            });
-          }}
-        />
-      </Form.Field>
-    );
-  };
-
   const bookEntities = () => {
+    const bookFormField = (bookName, bookValue) => {
+      return (
+        <Form.Field>
+          <label>{bookName}:</label>
+          <Form.Input
+            type="text"
+            name={bookName}
+            required
+            value={bookValue}
+            onChange={(e) => {
+              const { value, name } = e.currentTarget;
+
+              setNewBook({
+                ...newBook,
+                [name]: value,
+              });
+            }}
+          />
+        </Form.Field>
+      );
+    };
+
     return (
       <React.Fragment>
         <Card fluid raised>
@@ -120,29 +121,29 @@ export default function Entities() {
     );
   };
 
-  const userFormField = (userName, userValue, type) => {
-    return (
-      <Form.Field>
-        <label>{userName}:</label>
-        <Form.Input
-          type={type}
-          name={userName}
-          required
-          value={userValue}
-          onChange={(e) => {
-            const { value, name } = e.currentTarget;
-
-            setNewUser({
-              ...newUser,
-              [name]: value,
-            });
-          }}
-        />
-      </Form.Field>
-    );
-  };
-
   const userEntities = () => {
+    const userFormField = (userName, userValue, type) => {
+      return (
+        <Form.Field>
+          <label>{userName}:</label>
+          <Form.Input
+            type={type}
+            name={userName}
+            required
+            value={userValue}
+            onChange={(e) => {
+              const { value, name } = e.currentTarget;
+
+              setNewUser({
+                ...newUser,
+                [name]: value,
+              });
+            }}
+          />
+        </Form.Field>
+      );
+    };
+
     return (
       <React.Fragment>
         <Card fluid raised>
@@ -204,6 +205,27 @@ export default function Entities() {
     );
   };
 
+  const deletedBookEntities = () => {
+    return <Books type="deleted" />;
+  };
+
+  const deletedUserEntities = () => {
+    return <UserPaginationTable type="deleted" />;
+  };
+
+  const getActiveContent = () => {
+    switch (activeItem) {
+      case "books":
+        return bookEntities();
+      case "users":
+        return userEntities();
+      case "deletedBooks":
+        return deletedBookEntities();
+      case "deletedUsers":
+        return deletedUserEntities();
+    }
+  };
+
   const handleItemClick = (e, data) => {
     setActiveItem(data.name);
   };
@@ -225,13 +247,23 @@ export default function Entities() {
                   active={activeItem === "users"}
                   onClick={handleItemClick}
                 />
+                <Menu.Item
+                  className="text-danger"
+                  name="deletedBooks"
+                  active={activeItem === "deletedBooks"}
+                  onClick={handleItemClick}
+                />
+                <Menu.Item
+                  className="text-danger"
+                  name="deletedUsers"
+                  active={activeItem === "deletedUsers"}
+                  onClick={handleItemClick}
+                />
               </Menu>
             </Grid.Column>
 
             <Grid.Column stretched width={13}>
-              <Segment>
-                {activeItem === "books" ? bookEntities() : userEntities()}
-              </Segment>
+              <Segment>{getActiveContent()}</Segment>
             </Grid.Column>
           </Grid>
         </Card.Content>

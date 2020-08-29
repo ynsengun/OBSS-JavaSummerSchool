@@ -20,7 +20,9 @@ class Books extends React.Component {
   }
 
   getBooks = (search) => {
-    // console.log("search parameters ", search);
+    if (this.props.type === "deleted") {
+      return this.getDeletedBooks();
+    }
     let type = "";
     let value = "";
     let urlType = "";
@@ -52,11 +54,35 @@ class Books extends React.Component {
       .then((r) => r.json())
       .then((response) => {
         this.setState({ books: response }, () => {
-          if (isAuthenticated()) {
+          if (isAuthenticated() && type !== "entities") {
             this.getFavoriteRelation();
             this.getReadRelation();
           }
         });
+      })
+      .catch(() => {
+        toast.error("book fetch failed");
+      });
+  };
+
+  getDeletedBooks = () => {
+    fetch(
+      `http://localhost:8080/api/books/deleted?` +
+        new URLSearchParams({
+          pageNumber: this.state.currentPage,
+        }),
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    )
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((response) => {
+        this.setState({ books: response });
       })
       .catch(() => {
         toast.error("book fetch failed");
@@ -110,17 +136,18 @@ class Books extends React.Component {
     });
   };
 
+  getType = () => {
+    if (!this.props.type) {
+      return "regular";
+    }
+    return this.props.type;
+  };
+
   render() {
     const { books } = this.state;
     return (
       <BookPaginationTable
-        type={
-          this.props.type
-            ? this.props.type === "home"
-              ? "home"
-              : "entities"
-            : "regular"
-        }
+        type={this.getType()}
         data={books}
         changePageTo={this.changePageTo}
         existInFavoriteList={this.state.existInFavoriteList}

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import {
@@ -13,12 +14,13 @@ import {
 import { toast } from "react-toastify";
 import { checkResponse } from "../util/ResponseUtil";
 
-export default function UserPaginationTable() {
+export default function UserPaginationTable(props) {
   const [search, setSearch] = useState(null);
   const [users, setUsers] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
-  const history = useHistory();
   const [deleteItem, setDeleteItem] = useState([]);
+
+  const history = useHistory();
 
   const getUsers = () => {
     let value = "";
@@ -56,8 +58,36 @@ export default function UserPaginationTable() {
       });
   };
 
+  const getDeletedUsers = () => {
+    fetch(
+      `http://localhost:8080/api/users/deleted?` +
+        new URLSearchParams({
+          pageNumber: currentPage,
+        }),
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    )
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((response) => {
+        setUsers(response);
+      })
+      .catch(() => {
+        toast.error("deleted user fetch failed");
+      });
+  };
+
   useEffect(() => {
-    getUsers();
+    if (props.type === "deleted") {
+      getDeletedUsers();
+    } else {
+      getUsers();
+    }
   }, [currentPage, search]);
 
   const changePageTo = (i) => {
@@ -65,6 +95,35 @@ export default function UserPaginationTable() {
   };
 
   const getButtons = (userID) => {
+    if (props.type === "deleted") {
+      return (
+        <Table.Cell collapsing>
+          <Button
+            color="green"
+            size="small"
+            onClick={() => {
+              fetch(`http://localhost:8080/api/users/${userID}`, {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                credentials: "include",
+              })
+                .then((r) => checkResponse(r))
+                .then(() => {
+                  toast.success("User recover is successful");
+                  setDeleteItem([...deleteItem, userID]);
+                })
+                .catch(() => {
+                  toast.error("User recover failed");
+                });
+            }}
+          >
+            <Icon name="redo" className="m-0" />
+          </Button>
+        </Table.Cell>
+      );
+    }
     return (
       <Table.Cell collapsing>
         <Button
@@ -105,29 +164,31 @@ export default function UserPaginationTable() {
 
   return (
     <Container>
-      <Card fluid className="my-5" raised>
-        <Card.Content className=" d-flex">
-          <Form className="pl-4 pt-1" style={{ marginLeft: "160px" }}>
-            <Form.Field>
-              <input
-                id="userSearchInput"
-                placeholder="Search For Username..."
-              />
-            </Form.Field>
-          </Form>
-          <Button
-            style={{ height: "35px", marginTop: "6px", marginLeft: "100px" }}
-            onClick={() => {
-              let searchInput = document.getElementById("userSearchInput");
-              let searchVal = searchInput.value;
-              setCurrentPage(0);
-              setSearch(searchVal);
-            }}
-          >
-            Search
-          </Button>
-        </Card.Content>
-      </Card>
+      {props.type !== "deleted" ? (
+        <Card fluid className="my-5" raised>
+          <Card.Content className=" d-flex">
+            <Form className="pl-4 pt-1" style={{ marginLeft: "160px" }}>
+              <Form.Field>
+                <input
+                  id="userSearchInput"
+                  placeholder="Search For Username..."
+                />
+              </Form.Field>
+            </Form>
+            <Button
+              style={{ height: "35px", marginTop: "6px", marginLeft: "100px" }}
+              onClick={() => {
+                let searchInput = document.getElementById("userSearchInput");
+                let searchVal = searchInput.value;
+                setCurrentPage(0);
+                setSearch(searchVal);
+              }}
+            >
+              Search
+            </Button>
+          </Card.Content>
+        </Card>
+      ) : null}
 
       <Card fluid raised>
         <Table striped>

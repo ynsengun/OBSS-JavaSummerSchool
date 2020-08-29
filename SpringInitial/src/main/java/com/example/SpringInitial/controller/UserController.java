@@ -53,12 +53,23 @@ public class UserController {
 		
 		return ResponseEntity.ok(users);
 	}
+	
+	@GetMapping("/deleted")
+	@ResponseBody
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<?> getDeleted(@RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+			@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
+		Page<User> users = userService.findAllInActive(pageSize, pageNumber);
+		
+		return ResponseEntity.ok(users);
+	}
+
 
 	@GetMapping("/{id}")
 	@ResponseBody
 	@PreAuthorize("#id == authentication.principal.id or hasRole('ROLE_ADMIN')")
 	public ResponseEntity<?> get(@PathVariable long id) {
-		Optional<User> userOptional = userService.findByIdActive(id);
+		Optional<User> userOptional = userService.findById(id);
 		if (userOptional.isPresent()) {
 			return ResponseEntity.ok(userOptional.get());
 		}

@@ -45,6 +45,15 @@ public class BookController {
 		return ResponseEntity.ok(books);
 	}
 	
+	@GetMapping("/deleted")
+	@ResponseBody
+	public ResponseEntity<?> getDeleted(@RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+			@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber) {
+		Page<Book> books = bookService.findAllInActive(pageSize, pageNumber);
+		
+		return ResponseEntity.ok(books);
+	}
+	
 	@GetMapping("/{id}")
 	@ResponseBody
 	public ResponseEntity<?> get(@PathVariable long id) {

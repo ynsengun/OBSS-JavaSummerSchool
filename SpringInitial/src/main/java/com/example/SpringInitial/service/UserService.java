@@ -69,9 +69,14 @@ public class UserService implements UserDetailsService {
 		Pageable paged = PageRequest.of(pageNumber, pageSize);
 		return userRepository.findByActiveTrue(paged);
 	}
+	
+	public Page<User> findAllInActive(int pageSize, int pageNumber) {
+		Pageable paged = PageRequest.of(pageNumber, pageSize);
+		return userRepository.findByActiveFalse(paged);
+	}
 
-	public Optional<User> findByIdActive(long id) {
-		return userRepository.findByIdAndActiveTrue(id);
+	public Optional<User> findById(long id) {
+		return userRepository.findById(id);
 	}
 
 	public Page<User> findByUsernameActive(String username, int pageSize, int pageNumber) {
